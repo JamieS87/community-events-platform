@@ -1,0 +1,24 @@
+{
+  "private": true,
+  "name": "community-events-platform",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test-db": "vitest --fileParallelism=false"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JamieS87/community-events-platform/issues"
+  },
+  "homepage": "https://github.com/JamieS87/community-events-platform#readme",
+  "description": "",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.44.4",
+    "dotenv": "^16.4.5",
+    "jwt-decode": "^4.0.0"
+  },
+  "devDependencies": {
+    "vitest": "^2.0.3"
+  }
+}
