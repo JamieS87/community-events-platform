@@ -3,8 +3,7 @@ import { createClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-export const signIn = async (formData: FormData, redirectUrl?: string) => {
-  "use server";
+export const signIn = async (prev: {}, formData: FormData, redirectUrl?: string) => {
 
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
@@ -23,7 +22,6 @@ export const signIn = async (formData: FormData, redirectUrl?: string) => {
 };
 
 export const signUp = async (formData: FormData) => {
-  "use server";
 
   const origin = headers().get("origin");
   const email = formData.get("email") as string;
@@ -46,7 +44,6 @@ export const signUp = async (formData: FormData) => {
 };
 
 export const signOut = async () => {
-  "use server";
   const supabase = createClient();
   const { error } = await supabase.auth.signOut();
   return redirect("/");
