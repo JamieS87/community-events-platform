@@ -10,12 +10,7 @@ import { useSearchParams } from "next/navigation";
 
 export default function Login() {
   const loginRedirect = useSearchParams().get("next") ?? "/";
-  const [signInState, signInAction] = useFormState(
-    (prev: {}, formData: FormData) => {
-      return signIn(formData, loginRedirect);
-    },
-    {}
-  );
+  const [signInState, signInAction] = useFormState(signIn, {});
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -34,15 +29,20 @@ export default function Login() {
           Email
         </label>
         <input
+          id="email"
+          data-testid="email"
           className="rounded-md px-4 py-2 bg-inherit border mb-6"
           name="email"
           placeholder="you@example.com"
           required
+          autoComplete="email"
         />
         <label className="text-md" htmlFor="password">
           Password
         </label>
         <input
+          id="password"
+          data-testid="password"
           className="rounded-md px-4 py-2 bg-inherit border mb-6"
           type="password"
           name="password"
@@ -53,6 +53,7 @@ export default function Login() {
           formAction={signInAction}
           className="bg-green-700 rounded-md px-4 py-2 text-foreground mb-2"
           pendingText="Signing In..."
+          data-testid="signin"
         >
           Sign In
         </SubmitButton>
