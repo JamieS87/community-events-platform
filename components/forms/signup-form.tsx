@@ -108,6 +108,7 @@ export const SignUpForm = () => {
                     {...field}
                     type="email"
                     data-testid="email"
+                    autoComplete="email"
                   />
                 </FormControl>
                 <FormMessage />
@@ -144,6 +145,7 @@ export const SignUpForm = () => {
                     {...field}
                     type="password"
                     data-testid="password-repeat"
+                    autoComplete="new-password"
                   />
                 </FormControl>
                 <FormMessage />
@@ -159,7 +161,6 @@ export const SignUpForm = () => {
             Sign up
           </SubmitButton>
         </form>
-        <FormMessage />
       </Form>
     </>
   );
