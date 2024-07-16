@@ -17,7 +17,6 @@ import { z } from "zod";
 import { signUp } from "@/app/lib/actions/auth";
 import { SubmitButton } from "@/components/submit-button";
 import { signUpFormSchema } from "@/components/forms/signup-form-schema";
-import { useEffect } from "react";
 
 export const SignUpForm = () => {
   const [signUpState, signUpAction] = useFormState(signUp, null);
@@ -33,14 +32,6 @@ export const SignUpForm = () => {
       passwordRepeat: "",
     },
   });
-
-  useEffect(() => {
-    if (form.formState.isValid) {
-      form.trigger();
-    }
-  }, [form]);
-
-  console.log(form.formState.errors);
 
   return (
     <>
