@@ -14,7 +14,9 @@ export default async function SiteAuth() {
     <AuthUserMenu user={user} />
   ) : (
     <Button asChild>
-      <Link href="/login">Login</Link>
+      <Link href="/login" data-testid="login">
+        Login
+      </Link>
     </Button>
   );
 }
