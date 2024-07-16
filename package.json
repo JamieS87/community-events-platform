@@ -9,7 +9,8 @@
     "start": "next start",
     "test-db": "vitest --fileParallelism=false",
     "gentypes": "supabase gen types --lang=typescript --local > dbtypes.ts",
-    "lint": "next lint && supabase db lint"
+    "lint": "next lint && supabase db lint",
+    "test": "npx playwright test"
   },
   "author": "",
   "license": "ISC",
