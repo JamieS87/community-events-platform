@@ -1,24 +1,47 @@
 "use server";
+import { loginFormSchema } from "@/components/forms/login-form-schema";
 import { createClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { z } from "zod";
 
-export const signIn = async (prev: {}, formData: FormData, redirectUrl?: string) => {
+type FlattenedZodErrors = z.inferFlattenedErrors<typeof loginFormSchema, { message: string }>;
 
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
-  const supabase = createClient();
+export type SignInState = {
+  message: string;
+} | FlattenedZodErrors | null;
 
-  const { error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
+export const signIn = async (prev: SignInState, formData: FormData) => {
+
+  const result = loginFormSchema.safeParse({
+    email: formData.get('email'),
+    password: formData.get('password')
   });
 
-  if (error) {
-    return JSON.parse(JSON.stringify(error));
+  if(!result.success) {
+    const errors: FlattenedZodErrors = result.error.flatten((issue) => {
+      return { message: issue.message };
+    });
+    return errors;
   }
 
-  return redirect(redirectUrl ?? "/");
+  const supabase = createClient();
+
+  const { error: signInError } = await supabase.auth.signInWithPassword({
+    email: result.data.email,
+    password: result.data.password,
+  });
+
+  if (signInError) {
+    //Handle invalid credentials and email confirmation messages
+    if(/Invalid login credentials/.test(signInError.message) || /Email confirmation required/.test(signInError.message)) {
+      return { message: signInError.message };
+    }
+    //Throw for unhandled errors
+    throw signInError;
+  }
+
+  return redirect("/");
 };
 
 export const signUp = async (formData: FormData) => {
