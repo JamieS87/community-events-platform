@@ -86,7 +86,10 @@ export const signUp = async (prev: SignUpState, formData: FormData) => {
   });
 
   if (signUpError) {
+    if(/User already registered/.test(signUpError.message)) {
     return { message: signUpError.message };
+    }
+    throw signUpError;
   }
 
   return redirect(`/signup/confirm?email=${result.data.email}`);
