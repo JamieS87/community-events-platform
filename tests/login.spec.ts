@@ -9,3 +9,13 @@ test("Users can log in, and are redicted to the homepage on success", async ({ p
   await page.getByTestId('signin').click();
   await expect(page).toHaveURL('/');
 });
+
+test("Users are show a message when providing unrecognized credentials", async ({ page }) => {
+  await page.goto('/');
+  await page.getByTestId('login').click();
+  await page.waitForURL('/login');
+  await page.getByTestId('email').fill('eventfan@dev.com');
+  await page.getByTestId('password').fill('badpassword');
+  await page.getByTestId('signin').click();
+  await expect(page.getByTestId('signin-alert')).toHaveText('Invalid login credentials')
+});
