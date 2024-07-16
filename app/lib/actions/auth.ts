@@ -1,15 +1,16 @@
 "use server";
 import { loginFormSchema } from "@/components/forms/login-form-schema";
+import { signUpFormSchema } from "@/components/forms/signup-form-schema";
 import { createClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
-type FlattenedZodErrors = z.inferFlattenedErrors<typeof loginFormSchema, { message: string }>;
+type FlattenedZodLoginErrors = z.inferFlattenedErrors<typeof loginFormSchema, { message: string }>;
 
 export type SignInState = {
   message: string;
-} | FlattenedZodErrors | null;
+} | FlattenedZodLoginErrors | null;
 
 export const signIn = async (prev: SignInState, formData: FormData) => {
 
@@ -19,7 +20,7 @@ export const signIn = async (prev: SignInState, formData: FormData) => {
   });
 
   if(!result.success) {
-    const errors: FlattenedZodErrors = result.error.flatten((issue) => {
+    const errors: FlattenedZodLoginErrors = result.error.flatten((issue) => {
       return { message: issue.message };
     });
     return errors;
@@ -44,26 +45,51 @@ export const signIn = async (prev: SignInState, formData: FormData) => {
   return redirect("/");
 };
 
-export const signUp = async (formData: FormData) => {
+type FlattenedZodSignUpErrors = z.inferFlattenedErrors<typeof signUpFormSchema, { message: string }>;
 
-  const origin = headers().get("origin");
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
+export type SignUpState = {
+  message: string;
+} | FlattenedZodSignUpErrors | null;
+
+
+export const signUp = async (prev: SignUpState, formData: FormData) => {
+
+  const origin = headers().get('origin');
+
+  const result = signUpFormSchema.safeParse({
+    firstname: formData.get('firstname'),
+    lastname: formData.get('lastname'),
+    email: formData.get('email'),
+    password: formData.get('password'),
+    passwordRepeat: formData.get('passwordRepeat')
+  });
+
+  if(!result.success) {
+    const errors: FlattenedZodSignUpErrors = result.error.flatten((issue) => {
+      return { message: issue.message };
+    });
+    return errors;
+  }
+
   const supabase = createClient();
 
-  const { error } = await supabase.auth.signUp({
-    email,
-    password,
+  const { error: signUpError } = await supabase.auth.signUp({
+    email: result.data.email,
+    password: result.data.password,
     options: {
+      data: {
+        first_name: result.data.firstname,
+        last_name: result.data.lastname
+      },
       emailRedirectTo: `${origin}/auth/callback`,
     },
   });
 
-  if (error) {
-    return redirect("/login?message=Could not authenticate user");
+  if (signUpError) {
+    return { message: signUpError.message };
   }
 
-  return redirect("/");
+  return redirect(`/signup/confirm?email=${result.data.email}`);
 };
 
 export const signOut = async () => {
