@@ -1,4 +1,4 @@
-import { headers } from "next/headers";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default async function SignUpConfirmPage({
   searchParams,
@@ -6,10 +6,17 @@ export default async function SignUpConfirmPage({
   searchParams: { email: string };
 }) {
   return (
-    <>
-      <h2>Confirmation Email sent</h2>
-      <p>A confirmation email has been sent to {searchParams.email}</p>
-      <p>Click the link in the email to confirm your email address</p>
-    </>
+    <Card className="h-[90dvh] md:h-auto w-full md:my-auto md:max-w-md">
+      <CardHeader>
+        <CardTitle className="text-center">Confirmation Email Sent</CardTitle>
+      </CardHeader>
+      <CardContent className="text-center">
+        <p>
+          A confirmation email has been sent to{" "}
+          <span className="font-semibold">{searchParams.email}</span>
+        </p>
+        <p>Click the link in the email to confirm your email address</p>
+      </CardContent>
+    </Card>
   );
 }
