@@ -19,3 +19,9 @@ test("Users are show a message when providing unrecognized credentials", async (
   await page.getByTestId('signin').click();
   await expect(page.getByTestId('signin-alert')).toHaveText('Invalid login credentials')
 });
+
+test("login page has a signup button that links to signup page", async ({ page }) => {
+  await page.goto('/login');
+  await page.getByText(/sign up/i).click();
+  await expect(page).toHaveURL('/signup');
+})
