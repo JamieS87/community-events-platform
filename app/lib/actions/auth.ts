@@ -1,46 +1,98 @@
 "use server";
+import { loginFormSchema } from "@/components/forms/login-form-schema";
+import { signUpFormSchema } from "@/components/forms/signup-form-schema";
 import { createClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { z } from "zod";
 
-export const signIn = async (prev: {}, formData: FormData, redirectUrl?: string) => {
+type FlattenedZodLoginErrors = z.inferFlattenedErrors<typeof loginFormSchema, { message: string }>;
 
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
-  const supabase = createClient();
+export type SignInState = {
+  message: string;
+} | FlattenedZodLoginErrors | null;
 
-  const { error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
+export const signIn = async (prev: SignInState, formData: FormData) => {
+
+  const result = loginFormSchema.safeParse({
+    email: formData.get('email'),
+    password: formData.get('password')
   });
 
-  if (error) {
-    return JSON.parse(JSON.stringify(error));
+  if(!result.success) {
+    const errors: FlattenedZodLoginErrors = result.error.flatten((issue) => {
+      return { message: issue.message };
+    });
+    return errors;
   }
 
-  return redirect(redirectUrl ?? "/");
-};
-
-export const signUp = async (formData: FormData) => {
-
-  const origin = headers().get("origin");
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
   const supabase = createClient();
 
-  const { error } = await supabase.auth.signUp({
-    email,
-    password,
+  const { error: signInError } = await supabase.auth.signInWithPassword({
+    email: result.data.email,
+    password: result.data.password,
+  });
+
+  if (signInError) {
+    //Handle invalid credentials and email confirmation messages
+    if(/Invalid login credentials/.test(signInError.message) || /Email confirmation required/.test(signInError.message)) {
+      return { message: signInError.message };
+    }
+    //Throw for unhandled errors
+    throw signInError;
+  }
+
+  return redirect("/");
+};
+
+type FlattenedZodSignUpErrors = z.inferFlattenedErrors<typeof signUpFormSchema, { message: string }>;
+
+export type SignUpState = {
+  message: string;
+} | FlattenedZodSignUpErrors | null;
+
+
+export const signUp = async (prev: SignUpState, formData: FormData) => {
+
+  const origin = headers().get('origin');
+
+  const result = signUpFormSchema.safeParse({
+    firstname: formData.get('firstname'),
+    lastname: formData.get('lastname'),
+    email: formData.get('email'),
+    password: formData.get('password'),
+    passwordRepeat: formData.get('passwordRepeat')
+  });
+
+  if(!result.success) {
+    const errors: FlattenedZodSignUpErrors = result.error.flatten((issue) => {
+      return { message: issue.message };
+    });
+    return errors;
+  }
+
+  const supabase = createClient();
+
+  const { error: signUpError } = await supabase.auth.signUp({
+    email: result.data.email,
+    password: result.data.password,
     options: {
+      data: {
+        first_name: result.data.firstname,
+        last_name: result.data.lastname
+      },
       emailRedirectTo: `${origin}/auth/callback`,
     },
   });
 
-  if (error) {
-    return redirect("/login?message=Could not authenticate user");
+  if (signUpError) {
+    if(/User already registered/.test(signUpError.message)) {
+    return { message: signUpError.message };
+    }
+    throw signUpError;
   }
 
-  return redirect("/");
+  return redirect(`/signup/confirm?email=${result.data.email}`);
 };
 
 export const signOut = async () => {
