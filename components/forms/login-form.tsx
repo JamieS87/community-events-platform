@@ -17,6 +17,9 @@ import { z } from "zod";
 import { signIn } from "@/app/lib/actions/auth";
 import { SubmitButton } from "@/components/submit-button";
 import { loginFormSchema } from "@/components/forms/login-form-schema";
+import { Button } from "../ui/button";
+import Link from "next/link";
+import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 
 export const LoginForm = () => {
   const [signInState, signInAction] = useFormState(signIn, null);
@@ -31,83 +34,95 @@ export const LoginForm = () => {
   });
 
   return (
-    <>
-      {signInState && (
-        <div role="alert" data-testid="signin-alert">
-          {"fieldErrors" in signInState && (
-            <ul>
-              {Object.entries(signInState.fieldErrors).map(
-                ([fieldName, errors]) => {
-                  return (
-                    <li key={fieldName}>
-                      <ul>
-                        {errors.map(({ message }, idx) => {
-                          return <li key={`${fieldName}_${idx}`}>{message}</li>;
-                        })}
-                      </ul>
-                    </li>
-                  );
-                }
+    <Card className="max-w-md w-full my-auto">
+      <CardHeader>
+        <CardTitle>Login</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {signInState && (
+          <div role="alert" data-testid="signin-alert">
+            {"fieldErrors" in signInState && (
+              <ul>
+                {Object.entries(signInState.fieldErrors).map(
+                  ([fieldName, errors]) => {
+                    return (
+                      <li key={fieldName}>
+                        <ul>
+                          {errors.map(({ message }, idx) => {
+                            return (
+                              <li key={`${fieldName}_${idx}`}>{message}</li>
+                            );
+                          })}
+                        </ul>
+                      </li>
+                    );
+                  }
+                )}
+              </ul>
+            )}
+            {"formErrors" in signInState && (
+              <ul>
+                {signInState.formErrors.map(({ message }, idx) => {
+                  return <li key={idx}>{message}</li>;
+                })}
+              </ul>
+            )}
+            {"message" in signInState && <p>{signInState.message}</p>}
+          </div>
+        )}
+        <Form {...form}>
+          <form className="flex flex-col space-y-4 max-w-sm w-full">
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-foreground">Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="you@example.com"
+                      {...field}
+                      data-testid="email"
+                      autoComplete="email"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
               )}
-            </ul>
-          )}
-          {"formErrors" in signInState && (
-            <ul>
-              {signInState.formErrors.map(({ message }, idx) => {
-                return <li key={idx}>{message}</li>;
-              })}
-            </ul>
-          )}
-          {"message" in signInState && <p>{signInState.message}</p>}
-        </div>
-      )}
-      <Form {...form}>
-        <form className="space-y-8">
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="you@example.com"
-                    {...field}
-                    data-testid="email"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Password</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="••••••••••"
-                    {...field}
-                    type="password"
-                    data-testid="password"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <SubmitButton
-            formAction={signInAction}
-            pendingText="Logging in"
-            disabled={!form.formState.isValid}
-            data-testid="signin"
-          >
-            Login
-          </SubmitButton>
-        </form>
-      </Form>
-    </>
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-foreground">Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="••••••••••"
+                      {...field}
+                      type="password"
+                      data-testid="password"
+                      autoComplete="current-password"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <SubmitButton
+              formAction={signInAction}
+              pendingText="Logging in"
+              disabled={!form.formState.isValid}
+              data-testid="signin"
+            >
+              Login
+            </SubmitButton>
+            <Button variant="secondary" asChild>
+              <Link href="/signup">Sign Up</Link>
+            </Button>
+          </form>
+        </Form>
+      </CardContent>
+    </Card>
   );
 };
