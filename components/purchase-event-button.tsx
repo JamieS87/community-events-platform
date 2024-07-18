@@ -16,6 +16,8 @@ import {
   Form,
   FormMessage,
 } from "@/components/ui/form";
+import { purchaseEvent } from "@/app/lib/actions/checkout";
+import { SubmitButton } from "./submit-button";
 
 const payfSchema = z.object({
   payf_price: z.coerce.number({ message: "price must be a number" }).optional(),
@@ -49,7 +51,7 @@ export default function PurchaseEventButton({
 
   return (
     <Form {...form}>
-      <form action="/events/checkout" method="POST">
+      <form>
         {isPayfEvent && (
           <FormField
             control={form.control}
@@ -68,8 +70,9 @@ export default function PurchaseEventButton({
           ></FormField>
         )}
         <input type="hidden" name="event_id" value={event.id} />
-        <Button
+        <SubmitButton
           disabled={!form.formState.isValid}
+          formAction={purchaseEvent}
           {...props}
           data-testid="purchase-event"
           onClick={async (e) => {
@@ -78,9 +81,11 @@ export default function PurchaseEventButton({
               return router.replace(`/login?next=${pathname}`);
             }
           }}
+          pendingText="Please Wait"
+          loadingIcon={true}
         >
           Buy
-        </Button>
+        </SubmitButton>
       </form>
     </Form>
   );
