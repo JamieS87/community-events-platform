@@ -4,6 +4,7 @@ test("Users can log in, and are redicted to the homepage on success", async ({ p
   await page.goto('/');
   await page.getByTestId('login').click();
   await page.waitForURL('/login');
+  await page.getByTestId('email').click();
   await page.getByTestId('email').fill('eventfan@dev.com');
   await page.getByTestId('password').fill('eventfan@dev.com');
   await page.getByTestId('signin').click();
@@ -14,6 +15,7 @@ test("Users are show a message when providing unrecognized credentials", async (
   await page.goto('/');
   await page.getByTestId('login').click();
   await page.waitForURL('/login');
+  await page.getByTestId('email').click();
   await page.getByTestId('email').fill('eventfan@dev.com');
   await page.getByTestId('password').fill('badpassword');
   await page.getByTestId('signin').click();
