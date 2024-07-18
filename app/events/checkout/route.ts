@@ -86,7 +86,6 @@ export async function POST(request: Request) {
     if(stripeCustomer === null || stripeCustomer.deleted) {
       //The customer doesn't exist, or has been deleted on the stripe side
       //So create a new customer and update the customer on the supabase side
-      console.log("Reconciling customer");
       const newCustomer = await createStripeCustomer(user);
       try {
         await updateSupabaseCustomer(user.id, newCustomer.id);
@@ -103,7 +102,6 @@ export async function POST(request: Request) {
   }
 
   if (!customerId) {
-    console.log("Creating new customer");
     //There was no customer on the supabase side, so create a new stripe customer
     //and a new supabase customer
     const customer = await createStripeCustomer(user);
