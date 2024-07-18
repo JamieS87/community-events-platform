@@ -28,6 +28,7 @@ export const selectSupabaseUserIdByCustomerId = async (
     .from("customers")
     .select("user_id")
     .eq("customer_id", customerId)
+    .limit(1)
     .single();
   if (error) throw error;
   return customer.user_id;
