@@ -1,7 +1,6 @@
 "use client";
 
 import { User } from "@supabase/supabase-js";
-import { Button } from "./ui/button";
 import { usePathname, useRouter } from "next/navigation";
 import { Database } from "@/dbtypes";
 import { z } from "zod";
@@ -72,7 +71,7 @@ export default function PurchaseEventButton({
         <input type="hidden" name="event_id" value={event.id} />
         <SubmitButton
           disabled={!form.formState.isValid}
-          formAction={purchaseEvent}
+          formAction={purchaseEvent.bind(null, `/events/${event.id}`)}
           {...props}
           data-testid="purchase-event"
           onClick={async (e) => {
