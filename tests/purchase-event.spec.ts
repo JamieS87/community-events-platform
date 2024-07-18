@@ -55,3 +55,12 @@ test("Authenticated users can purchase pay as you feel events", async ({ page })
   await page.getByTestId('hosted-payment-submit-button').click();
   await expect(page).toHaveURL(/events\/checkout\/success/, { timeout: 60000});
 });
+
+test("Pressing the back link on the stripe checkout page for an event returns the user to the event page they came from", async ({ page }) => {
+  await page.goto('/events/1');
+  await page.getByTestId('purchase-event').click();
+  await page.waitForURL(/checkout\.stripe\.com/, { timeout: 60000});
+  await expect(page).toHaveURL(/checkout\.stripe\.com/, { timeout: 60000});
+  await page.getByRole('link', { name: 'Back to'}).click();
+  await expect(page).toHaveURL(/events\/1/, { timeout: 60000});
+});
