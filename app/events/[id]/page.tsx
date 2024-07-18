@@ -21,8 +21,8 @@ export default async function EventPage({
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      <h2>{event.name}</h2>
+    <div className="flex flex-col gap-4 max-w-6xl w-full p-2">
+      <h2 className="font-semibold text-2xl">{event.name}</h2>
       <p>{event.description}</p>
       <p>
         Starts:{" "}
