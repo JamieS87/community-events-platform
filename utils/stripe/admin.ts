@@ -5,6 +5,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!!);
 
 export const createStripeCustomer = async (user: User) => {
   const customer = await stripe.customers.create({
+    ...(user.email && { email: user.email}),
     metadata: { user_id: user.id },
   });
   return customer;
