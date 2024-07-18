@@ -21,8 +21,7 @@ const eventSchema = z.object({
   payf_price: z.coerce.number().positive().min(0.3).transform((v) => v * 100).optional()
 });
 
-export async function purchaseEvent(formData: FormData) {
-
+export async function purchaseEvent(cancelUrl: string, formData: FormData) {
   const eventValidationResult = eventSchema.safeParse(
     { 
       event_id: formData.get('event_id'),
@@ -138,7 +137,7 @@ export async function purchaseEvent(formData: FormData) {
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
     customer: customerId as string,
-    cancel_url: origin,
+    cancel_url: `${origin}/${cancelUrl}`,
     success_url: `${origin}/events/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
     line_items: [eventLineItem],
     metadata: { event_id: event.id, user_id: user.id },
