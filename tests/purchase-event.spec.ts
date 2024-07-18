@@ -1,7 +1,6 @@
 import { test, expect } from "../playwright/fixtures";
 
 test("Authenticated users can purchase free events", async ({ page }) => {
-
   await page.goto('/events/1');
   await page.getByTestId('purchase-event').click();
   await page.waitForURL(/checkout\.stripe\.com/, { timeout: 60000});
@@ -17,8 +16,6 @@ test("Authenticated users can purchase free events", async ({ page }) => {
 });
 
 test("Authenticated users can purchase paid events", async ({ page }) => {
-
-
   await page.goto('/events/2');
   await page.getByTestId('purchase-event').click();
   await page.waitForURL(/checkout\.stripe\.com/, { timeout: 60000});
@@ -39,7 +36,6 @@ test("Authenticated users can purchase paid events", async ({ page }) => {
 });
 
 test("Authenticated users can purchase pay as you feel events", async ({ page }) => {
-
   await page.goto('/events/4');
   await page.getByRole('spinbutton', { name: 'PAYF price'}).fill("0.3");
   await page.getByTestId('purchase-event').click();
