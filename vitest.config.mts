@@ -8,6 +8,7 @@ dotEnvConfig({ path: ".env" });
 
 export default defineConfig({
   test: {
+    include: ['./supabase/__tests__/**/*'],
     globals: true,
     globalSetup: ["test-setup.ts"],
     reporters: [
