@@ -14,7 +14,6 @@ export default async function AuthUserMenu({ user }: { user: User }) {
 
   return (
     <>
-      <div>welcome {user.email ? user.email : ""}</div>
       {isStaff && <Link href="/admin">Admin</Link>}
       <SignOutButton />
     </>
