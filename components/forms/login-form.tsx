@@ -14,12 +14,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormState } from "react-dom";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { signIn } from "@/app/lib/actions/auth";
+import { signIn, signInWithGoogle } from "@/app/lib/actions/auth";
 import { SubmitButton } from "@/components/submit-button";
 import { loginFormSchema } from "@/components/forms/login-form-schema";
 import { Button } from "../ui/button";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import GoogleIcon from "../google-icon";
 
 export const LoginForm = () => {
   const [signInState, signInAction] = useFormState(signIn, null);
@@ -38,7 +39,7 @@ export const LoginForm = () => {
       <CardHeader>
         <CardTitle>Login</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="space-y-4">
         {signInState && (
           <div role="alert" data-testid="signin-alert">
             {"fieldErrors" in signInState && (
@@ -122,6 +123,20 @@ export const LoginForm = () => {
             </Button>
           </form>
         </Form>
+        <form className="flex">
+          <SubmitButton
+            variant="outline"
+            formAction={signInWithGoogle}
+            loadingIcon={true}
+            pendingText="Signing in with google"
+            className="mx-auto"
+          >
+            <div className="w-6 h-6 mr-4 flex">
+              <GoogleIcon />
+            </div>
+            Sign in with Google
+          </SubmitButton>
+        </form>
       </CardContent>
     </Card>
   );
