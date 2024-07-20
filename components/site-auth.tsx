@@ -1,7 +1,7 @@
 import { createClient } from "@/utils/supabase/server";
 import { Button } from "./ui/button";
 import Link from "next/link";
-import AuthUserMenu from "./auth-user-menu";
+
 import {
   DropdownMenu,
   DropdownMenuItem,
