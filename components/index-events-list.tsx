@@ -14,9 +14,10 @@ export default async function IndexEventsList() {
     .eq("published", true)
     .order("created_at", { ascending: false })
     .order("id");
+
   if (error) throw error;
   return (
-    <ul className="w-full">
+    <ul className="w-full flex flex-col space-y-4">
       {events.map((event) => {
         return (
           <li key={event.id}>
