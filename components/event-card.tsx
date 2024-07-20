@@ -14,7 +14,10 @@ export default async function EventCard({
         <CardHeader>
           <CardTitle>{event.name}</CardTitle>
         </CardHeader>
-        <CardContent>{event.description}</CardContent>
+        <CardContent>
+          <div className="aspect-video w-full"></div>
+          {event.description}
+        </CardContent>
       </Card>
     </Link>
   );
