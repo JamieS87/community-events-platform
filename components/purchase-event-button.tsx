@@ -50,7 +50,7 @@ export default function PurchaseEventButton({
 
   return (
     <Form {...form}>
-      <form>
+      <form className="w-full">
         {isPayfEvent && (
           <FormField
             control={form.control}
@@ -70,6 +70,7 @@ export default function PurchaseEventButton({
         )}
         <input type="hidden" name="event_id" value={event.id} />
         <SubmitButton
+          className="w-full"
           disabled={!form.formState.isValid}
           formAction={purchaseEvent.bind(null, `/events/${event.id}`)}
           {...props}
