@@ -44,9 +44,6 @@ export default async function UserPurchasedEvents() {
                 <Link href={`/events/${event_id}`}>
                   {(event as Tables<"events">).name}
                 </Link>
-                <Button className="col-start-4" size="lg">
-                  Add To Calendar
-                </Button>
               </li>
             );
           })}
