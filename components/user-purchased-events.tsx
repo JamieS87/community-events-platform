@@ -3,7 +3,6 @@
 import { Tables } from "@/dbtypes";
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
-import { Button } from "./ui/button";
 
 export default async function UserPurchasedEvents() {
   const supabase = createClient();
