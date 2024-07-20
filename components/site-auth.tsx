@@ -32,7 +32,7 @@ export default async function SiteAuth() {
       <DropdownMenuTrigger>
         <UserAvatar user={user} />
       </DropdownMenuTrigger>
-      <DropdownMenuContent>
+      <DropdownMenuContent avoidCollisions={true} align="end">
         {isStaff && (
           <DropdownMenuItem asChild>
             <Link href="/admin">Admin Dashboard</Link>
