@@ -15,7 +15,7 @@ export default async function ProfilePage() {
   }
 
   return (
-    <div className="flex flex-col p-2 space-y-4 w-full">
+    <div className="flex flex-col p-2 space-y-4 w-full max-w-6xl mx-auto">
       <div
         className="flex items-center mx-auto space-x-4"
         data-testid="profile-user"
