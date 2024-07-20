@@ -12,7 +12,7 @@ export type UserAvatarProps = {
 export default async function UserAvatar({ user, ...props }: UserAvatarProps) {
   const avatarFallback = getUserFullName(user)?.slice(0, 1)[0];
   return (
-    <Avatar {...props}>
+    <Avatar {...props} data-testid="auth-avatar">
       <AvatarImage src={user.user_metadata.avatar_url} />
       <AvatarFallback>
         {avatarFallback || user.email?.slice(0, 1)[0] || ""}
