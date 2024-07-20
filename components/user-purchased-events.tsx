@@ -3,6 +3,7 @@
 import { Tables } from "@/dbtypes";
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
+import { Button } from "./ui/button";
 
 export default async function UserPurchasedEvents() {
   const supabase = createClient();
@@ -36,10 +37,16 @@ export default async function UserPurchasedEvents() {
         <ul>
           {purchasedEvents.map(({ id, event_id, event }) => {
             return (
-              <li key={id}>
+              <li
+                key={id}
+                className="border-t py-4 grid grid-cols-4 items-center"
+              >
                 <Link href={`/events/${event_id}`}>
                   {(event as Tables<"events">).name}
                 </Link>
+                <Button className="col-start-4" size="lg">
+                  Add To Calendar
+                </Button>
               </li>
             );
           })}
