@@ -50,7 +50,6 @@ export default async function SiteAuth() {
       </DropdownMenuContent>
     </DropdownMenu>
   ) : (
-    // <AuthUserMenu user={user} />
     <Button asChild>
       <Link href="/login" data-testid="login">
         Login
