@@ -14,8 +14,8 @@ export default async function UserAvatar({ user, ...props }: UserAvatarProps) {
   return (
     <Avatar {...props} data-testid="auth-avatar">
       <AvatarImage src={user.user_metadata.avatar_url} />
-      <AvatarFallback>
-        {avatarFallback || user.email?.slice(0, 1)[0] || ""}
+      <AvatarFallback className="text-xl flex items-center bg-slate-400">
+        {avatarFallback || user.email?.slice(0, 1)[0].toUpperCase() || ""}
       </AvatarFallback>
     </Avatar>
   );

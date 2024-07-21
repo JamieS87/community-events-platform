@@ -21,6 +21,7 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import GoogleIcon from "../google-icon";
+import { AlertTriangle } from "lucide-react";
 
 export const LoginForm = () => {
   const [signInState, signInAction] = useFormState(signIn, null);
@@ -68,11 +69,16 @@ export const LoginForm = () => {
                 })}
               </ul>
             )}
-            {"message" in signInState && <p>{signInState.message}</p>}
+            {"message" in signInState && (
+              <p className="flex items-center justify-center border rounded-lg px-6 py-4 border-red-300 font-semibold">
+                <AlertTriangle className="w-6 h-6 mr-2" />
+                {signInState.message}
+              </p>
+            )}
           </div>
         )}
         <Form {...form}>
-          <form className="flex flex-col space-y-4 max-w-sm w-full">
+          <form className="flex flex-col space-y-4 w-full">
             <FormField
               control={form.control}
               name="email"

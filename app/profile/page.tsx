@@ -20,11 +20,7 @@ export default async function ProfilePage() {
         className="flex items-center mx-auto space-x-4"
         data-testid="profile-user"
       >
-        <UserAvatar
-          user={user}
-          className="w-16 h-16"
-          data-testid="profile-avatar"
-        />
+        <UserAvatar user={user} data-testid="profile-avatar" />
         <div className="flex flex-col">
           <p>{getUserFullName(user) || ""}</p>
           <p>{user.email}</p>

@@ -3,6 +3,7 @@
 import { Tables } from "@/dbtypes";
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
+import AddToCalendarButton from "./add-to-calendar-button";
 
 export default async function UserPurchasedEvents() {
   const supabase = createClient();
@@ -43,6 +44,9 @@ export default async function UserPurchasedEvents() {
                 <Link href={`/events/${event_id}`}>
                   {(event as Tables<"events">).name}
                 </Link>
+                <div className="col-start-4">
+                  <AddToCalendarButton />
+                </div>
               </li>
             );
           })}

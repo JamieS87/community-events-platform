@@ -108,7 +108,7 @@ export const signInWithGoogle = async () => {
     options: {
       scopes:
         "https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/userinfo.profile",
-      redirectTo: "http://localhost:3000/auth/callback",
+      redirectTo: "http://localhost:3000/auth/callback?flow=google",
       queryParams: {
         access_type: "offline",
         prompt: "consent",
@@ -119,3 +119,22 @@ export const signInWithGoogle = async () => {
   if (error) throw error;
   redirect(data.url);
 };
+
+export const requestCalendarEventsScope = async () => {
+  const supabase = createClient();
+  const { data: { user }, error: userError } = await supabase.auth.getUser();
+
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      scopes: 'https://www.googleapis.com/auth/calendar.events',
+      redirectTo: 'http://localhost:3000/auth/callback?flow=google',
+      queryParams: {
+        access_type: 'offline',
+        include_granted_scopes: 'true',
+        login_hint: user?.email ?? ''
+      }
+    }
+  });
+  return redirect(data?.url || '/error');
+}

@@ -44,7 +44,7 @@ export default async function SiteAuth() {
             Profile
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem>
+        <DropdownMenuItem className="flex">
           <SignOutButton />
         </DropdownMenuItem>
       </DropdownMenuContent>

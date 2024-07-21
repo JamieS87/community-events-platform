@@ -1,3 +1,4 @@
+import { setUsersGoogleTokens } from "@/utils/supabase/admin";
 import { createClient } from "@/utils/supabase/server";
 import { NextResponse } from "next/server";
 
@@ -11,15 +12,40 @@ export async function GET(request: Request) {
   const origin = requestUrl.origin;
   const next = requestUrl.searchParams.get("next") ?? "/";
 
+  const flow = requestUrl.searchParams.get("flow");
+
   if (code) {
     const supabase = createClient();
-    const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-    if (error) {
+    const {
+      data: { session, user },
+      error,
+    } = await supabase.auth.exchangeCodeForSession(code);
+    console.log(session);
+    if (error || !user || !session)
       return NextResponse.redirect(`${origin}/auth-code-error`);
-    } else {
-      return NextResponse.redirect(`${origin}/${next}`);
+
+    if (flow && flow === "google") {
+      if (!session.provider_token || !session.provider_refresh_token) {
+        return NextResponse.redirect(`${origin}/auth-code-error`);
+      }
+
+      //Refresh the session to remove provider_token and provider_refresh_token
+      //from the response cookies
+      const {
+        data: { session: refreshedSession },
+      } = await supabase.auth.refreshSession(session);
+
+      try {
+        await setUsersGoogleTokens(
+          user,
+          session?.provider_token,
+          session?.provider_refresh_token
+        );
+      } catch (error) {
+        return NextResponse.redirect(`${origin}/auth-code-error`);
+      }
     }
-  } else {
-    return NextResponse.redirect(`${origin}/auth-code-error`);
+    return NextResponse.redirect(`${origin}/${next}`);
   }
+  return NextResponse.redirect(`${origin}/auth-code-error`);
 }

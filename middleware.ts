@@ -8,7 +8,7 @@ export async function middleware(request: NextRequest) {
 
   const redirectUrl = request.nextUrl.clone();
 
-  const requiresAuthentication = ["/admin", "/profile", "/checkout/session"];
+  const requiresAuthentication = ["/admin", "/profile", "/events/checkout"];
 
   if (
     requiresAuthentication.some((route) => {
@@ -42,7 +42,7 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(redirectUrl);
     }
   }
-
+  
   return response;
 }
 

@@ -71,3 +71,14 @@ export const insertSupabasePurchasedEvent = async (
     throw error;
   }
 };
+
+export const setUsersGoogleTokens = async (user: User, access_token: string, refresh_token: string) => {
+  const { data: { user: updatedUser }, error} = await supabaseAdmin.auth.admin.updateUserById(user.id, { app_metadata: {
+    google_access_token: access_token,
+    google_refresh_token: refresh_token
+  }});
+  if(error) {
+    throw error;
+  }
+  return updatedUser;
+}
