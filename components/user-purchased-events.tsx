@@ -4,21 +4,17 @@ import { Tables } from "@/dbtypes";
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import AddToCalendarButton from "./add-to-calendar-button";
+import { redirect } from "next/navigation";
 
 export default async function UserPurchasedEvents() {
   const supabase = createClient();
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser();
+  const { data, error } = await supabase.auth.getUser();
 
-  if (userError) {
-    throw userError;
+  if (error) {
+    return redirect("/login");
   }
 
-  if (!user || userError) {
-    throw "Encountered an error retrieving user";
-  }
+  const { user } = data;
 
   const { data: purchasedEvents, error: purchasedEventsError } = await supabase
     .from("purchased_events")
@@ -29,10 +25,14 @@ export default async function UserPurchasedEvents() {
     throw purchasedEventsError;
   }
 
+  const hasPurchasedEvents = purchasedEvents.length > 0;
+
   return (
     <div data-testid="purchased-events">
-      {purchasedEvents.length === 0 ? (
-        "No purchased events to display"
+      {!hasPurchasedEvents ? (
+        <p className="text-center text-lg">
+          No purchased events to display yet
+        </p>
       ) : (
         <ul>
           {purchasedEvents.map(({ id, event_id, event }) => {
@@ -44,8 +44,8 @@ export default async function UserPurchasedEvents() {
                 <Link href={`/events/${event_id}`}>
                   {(event as Tables<"events">).name}
                 </Link>
-                <div className="col-start-4">
-                  <AddToCalendarButton />
+                <div className="col-start-4 ml-auto">
+                  <AddToCalendarButton event_id={event_id} />
                 </div>
               </li>
             );
