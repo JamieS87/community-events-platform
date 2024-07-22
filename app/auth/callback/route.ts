@@ -1,6 +1,31 @@
-import { setUsersGoogleTokens } from "@/utils/supabase/admin";
+import { setUserGoogleTokens } from "@/utils/supabase/admin";
 import { createClient } from "@/utils/supabase/server";
 import { NextResponse } from "next/server";
+
+async function handleGoogleSignInFlow(request: Request, code: string) {
+  const requestUrl = new URL(request.url);
+  const { origin } = requestUrl;
+
+  const supabase = createClient();
+  const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+  if (error) {
+    return NextResponse.redirect("/");
+  }
+  const { user, session } = data;
+  if (!session.provider_token || !session.provider_refresh_token) {
+    return NextResponse.redirect(`${origin}/auth-error`);
+  } else {
+    await setUserGoogleTokens(
+      user,
+      session.provider_token,
+      session.provider_refresh_token
+    );
+    await supabase.auth.refreshSession();
+    return NextResponse.redirect(
+      `${origin}${requestUrl.searchParams.get("return_to") ?? "/"}`
+    );
+  }
+}
 
 export async function GET(request: Request) {
   // The `/auth/callback` route is required for the server-side auth flow implemented
@@ -10,42 +35,30 @@ export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
   const origin = requestUrl.origin;
-  const next = requestUrl.searchParams.get("next") ?? "/";
 
   const flow = requestUrl.searchParams.get("flow");
 
   if (code) {
-    const supabase = createClient();
-    const {
-      data: { session, user },
-      error,
-    } = await supabase.auth.exchangeCodeForSession(code);
-    console.log(session);
-    if (error || !user || !session)
-      return NextResponse.redirect(`${origin}/auth-code-error`);
-
-    if (flow && flow === "google") {
-      if (!session.provider_token || !session.provider_refresh_token) {
-        return NextResponse.redirect(`${origin}/auth-code-error`);
-      }
-
-      //Refresh the session to remove provider_token and provider_refresh_token
-      //from the response cookies
-      const {
-        data: { session: refreshedSession },
-      } = await supabase.auth.refreshSession(session);
-
-      try {
-        await setUsersGoogleTokens(
-          user,
-          session?.provider_token,
-          session?.provider_refresh_token
-        );
-      } catch (error) {
-        return NextResponse.redirect(`${origin}/auth-code-error`);
-      }
+    if (
+      flow === "google-signin" ||
+      flow === "google-incremental-auth" ||
+      flow === "google-link-account"
+    ) {
+      return handleGoogleSignInFlow(request, code);
     }
-    return NextResponse.redirect(`${origin}/${next}`);
+
+    const supabase = createClient();
+    const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+
+    const { user, session } = data;
+
+    if (error || !user || !session) {
+      throw error;
+    }
+
+    const returnTo = requestUrl.searchParams.get("return_to");
+    return NextResponse.redirect(`${origin}${returnTo ?? ""}`);
   }
+
   return NextResponse.redirect(`${origin}/auth-code-error`);
 }
