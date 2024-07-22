@@ -1,56 +1,72 @@
 "use server";
 
 import { createClient } from "@/utils/supabase/server";
-import { auth, calendar } from "@googleapis/calendar";
-import { requestCalendarEventsScope } from "./auth";
+import { calendar } from "@googleapis/calendar";
+import { redirect } from "next/navigation";
+import { createGoogleServerClient } from "@/utils/google/server";
+import { Tables } from "@/dbtypes";
+import { insertGoogleCalendarEvent } from "@/utils/google/calendar";
+import { getUserGoogleTokens } from "@/utils/supabase/admin";
 
-export async function addEventToCalendar(prev: null | {}, formData: FormData) {
+export async function addEventToCalendar(
+  eventId: Tables<"events">["id"],
+  prev: null | {},
+  formData: FormData
+) {
   const supabase = createClient();
 
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser();
-  if (error || !user) {
-    throw error;
+  const { data, error } = await supabase.auth.getUser();
+  if (error) {
+    return redirect("/login");
   }
 
-  if (
-    !user.app_metadata.google_access_token ||
-    !user.app_metadata.google_refresh_token
-  ) {
-    throw Error("Not authenticated with google");
+  const { user } = data;
+
+  const { access_token, refresh_token } = await getUserGoogleTokens(user);
+
+  console.log("Access token: ", access_token, "Refresh token: ", refresh_token);
+
+  const googleClient = await createGoogleServerClient();
+  googleClient.setCredentials({ access_token, refresh_token });
+
+  if (!access_token || !refresh_token) {
+    return { code: "google_identity_required" };
   }
 
-  const {
-    google_access_token: access_token,
-    google_refresh_token: refresh_token,
-  } = user.app_metadata;
+  const { data: event, error: getEventError } = await supabase
+    .from("events")
+    .select("*")
+    .eq("id", eventId)
+    .single();
 
-  const authClient = new auth.OAuth2({
-    clientId: process.env.GOOGLE_AUTH_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_AUTH_CLIENT_SECRET,
-  });
-  authClient.setCredentials({
-    access_token,
-    refresh_token,
-  });
-
-  const { scopes, sub } = await authClient.getTokenInfo(access_token);
-
-  if (
-    !scopes.find(
-      (scope) => scope === "https://www.googleapis.com/auth/calendar.events"
-    )
-  ) {
-    return await requestCalendarEventsScope();
+  if (getEventError) {
+    throw getEventError;
   }
 
-  const calendarApi = calendar({ version: "v3", auth: authClient });
   try {
-    const r = await calendarApi.events.list({ calendarId: "primary" });
+    const { scopes } = await googleClient.getTokenInfo(access_token);
+    console.log(scopes);
+    if (
+      !scopes.find(
+        (scope) => scope === "https://www.googleapis.com/auth/calendar.events"
+      )
+    ) {
+      console.log("Required scope not found");
+      console.log(scopes);
+      //User hasn't granted the required scopes
+      return { code: "scopes_required" };
+    }
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
+
+  const calendarApi = calendar({ version: "v3", auth: googleClient });
+  try {
+    await insertGoogleCalendarEvent(calendarApi, event);
+    return { code: "success" };
   } catch (error) {
     console.log(error);
+    throw error;
   }
-  return null;
 }
