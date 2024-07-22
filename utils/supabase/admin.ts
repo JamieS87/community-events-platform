@@ -52,7 +52,8 @@ export const updateSupabaseCustomer = async (
 ) => {
   const { error } = await supabaseAdmin
     .from("customers")
-    .update({ customer_id }).eq('user_id',user_id);
+    .update({ customer_id })
+    .eq("user_id", user_id);
   if (error) {
     throw error;
   }
@@ -72,13 +73,28 @@ export const insertSupabasePurchasedEvent = async (
   }
 };
 
-export const setUsersGoogleTokens = async (user: User, access_token: string, refresh_token: string) => {
-  const { data: { user: updatedUser }, error} = await supabaseAdmin.auth.admin.updateUserById(user.id, { app_metadata: {
-    google_access_token: access_token,
-    google_refresh_token: refresh_token
-  }});
-  if(error) {
+export const setUserGoogleTokens = async (
+  user: User,
+  access_token: string,
+  refresh_token: string
+) => {
+  const {
+    data: { user: updatedUser },
+    error,
+  } = await supabaseAdmin.auth.admin.updateUserById(user.id, {
+    app_metadata: {
+      google_access_token: access_token,
+      google_refresh_token: refresh_token,
+    },
+  });
+  if (error) {
     throw error;
   }
   return updatedUser;
-}
+};
+
+export const getUserGoogleTokens = async (user: User) => {
+  const access_token = user.app_metadata.google_access_token;
+  const refresh_token = user.app_metadata.google_refresh_token;
+  return { access_token, refresh_token };
+};
