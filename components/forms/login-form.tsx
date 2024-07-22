@@ -22,6 +22,7 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import GoogleIcon from "../google-icon";
 import { AlertTriangle } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 
 export const LoginForm = () => {
   const [signInState, signInAction] = useFormState(signIn, null);
@@ -34,6 +35,8 @@ export const LoginForm = () => {
       password: "",
     },
   });
+
+  const searchParams = useSearchParams();
 
   return (
     <Card className="max-w-md w-full my-auto">
@@ -132,7 +135,10 @@ export const LoginForm = () => {
         <form className="flex">
           <SubmitButton
             variant="outline"
-            formAction={signInWithGoogle}
+            formAction={signInWithGoogle.bind(
+              null,
+              searchParams.get("next") ?? "/"
+            )}
             loadingIcon={true}
             pendingText="Signing in with google"
             className="mx-auto"
