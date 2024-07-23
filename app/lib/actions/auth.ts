@@ -2,7 +2,7 @@
 import { loginFormSchema } from "@/components/forms/login-form-schema";
 import { signUpFormSchema } from "@/components/forms/signup-form-schema";
 import { createClient } from "@/utils/supabase/server";
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
@@ -109,6 +109,8 @@ export const signUp = async (prev: SignUpState, formData: FormData) => {
 
 export const signOut = async () => {
   const supabase = createClient();
+  cookies().delete("g_access_token");
+  cookies().delete("g_refresh_token");
   const { error } = await supabase.auth.signOut();
   return redirect("/");
 };
