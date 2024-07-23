@@ -1,31 +1,31 @@
 import { auth } from "@googleapis/calendar";
-import { setUserGoogleTokens } from "../supabase/admin";
-import { createClient } from "../supabase/server";
+import { cookies } from "next/headers";
 
-export async function createGoogleServerClient() {
+export async function createGoogleServerClient(
+  access_token: string,
+  refresh_token: string
+) {
   const client = new auth.OAuth2({
     clientId: process.env.GOOGLE_AUTH_CLIENT_ID,
     clientSecret: process.env.GOOGLE_AUTH_CLIENT_SECRET,
+    credentials: {
+      access_token,
+      refresh_token,
+    },
   });
 
   client.on("tokens", async (tokens) => {
-    const supabase = createClient();
-    const { data, error } = await supabase.auth.getUser();
-    if (error) throw error;
-    const { user } = data;
     if (tokens.refresh_token) {
-      await setUserGoogleTokens(
-        user,
-        user.app_metadata.google_access_token,
-        tokens.refresh_token
-      );
+      cookies().set("g_refresh_token", tokens.refresh_token, {
+        httpOnly: true,
+        sameSite: true,
+      });
     }
     if (tokens.access_token) {
-      await setUserGoogleTokens(
-        user,
-        tokens.access_token,
-        user.app_metadata.google_refresh_token
-      );
+      cookies().set("g_access_token", tokens.access_token, {
+        httpOnly: true,
+        sameSite: true,
+      });
     }
   });
   return client;
