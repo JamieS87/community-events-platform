@@ -10,30 +10,32 @@ import {
   requestCalendarEventsScope,
   requestLinkGoogleIdentity,
 } from "@/app/lib/actions/auth";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Calendar, CalendarCheck } from "lucide-react";
 
 export default function AddToCalendarButton({
   event_id,
+  isInCalendar,
 }: {
   event_id: Tables<"events">["id"];
+  isInCalendar: boolean;
 }) {
   const [state, addEventToCalendarAction] = useFormState(
     addEventToCalendar.bind(null, event_id),
     null
   );
 
-  const [added, setAdded] = useState(false);
   const [googleIdentityRequired, setGoogleIdentityRequired] = useState(false);
   const [scopesRequired, setScopesRequired] = useState(false);
 
   const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     if (state !== null) {
       switch (state.code) {
         case "success":
-          setAdded(true);
+          router.refresh();
           break;
         case "google_identity_required":
           setGoogleIdentityRequired(true);
@@ -43,7 +45,7 @@ export default function AddToCalendarButton({
           break;
       }
     }
-  }, [state, event_id]);
+  }, [state, router]);
 
   return (
     <>
@@ -69,7 +71,7 @@ export default function AddToCalendarButton({
           </Button>
         </p>
       )}
-      {added ? (
+      {isInCalendar ? (
         <div className="text-primary-foreground rounded-md text-sm font-medium bg-blue-700 px-4 py-2 h-10 inline-flex items-center">
           Added to calendar <CalendarCheck className="w-4 h-4 ml-4" />
         </div>
