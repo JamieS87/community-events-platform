@@ -1,5 +1,6 @@
 import GoogleIcon from "@/components/google-icon";
 import LinkGoogleAccountButton from "@/components/link-google-account-button";
+// import SyncCalendarButton from "@/components/sync-calendar-button";
 import UserAvatar from "@/components/user-avatar";
 import UserPurchasedEvents from "@/components/user-purchased-events";
 import { createClient } from "@/utils/supabase/server";
@@ -51,7 +52,10 @@ export default async function ProfilePage() {
           </div>
         )}
       </div>
-      <h2 className="font-semibold text-xl">My Events</h2>
+      <div className="flex items-center justify-between">
+        <h2 className="font-semibold text-xl">My Events</h2>
+        {/* <SyncCalendarButton /> */}
+      </div>
       <UserPurchasedEvents />
     </div>
   );
