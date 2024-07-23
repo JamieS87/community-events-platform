@@ -1,4 +1,4 @@
-import { Database } from "@/dbtypes";
+import { Database, Tables } from "@/dbtypes";
 import { createClient, User } from "@supabase/supabase-js";
 import Stripe from "stripe";
 
@@ -73,28 +73,55 @@ export const insertSupabasePurchasedEvent = async (
   }
 };
 
-export const setUserGoogleTokens = async (
-  user: User,
-  access_token: string,
-  refresh_token: string
+export const insertSupabaseCalendarEvent = async (
+  user_id: User["id"],
+  event_id: Tables<"events">["id"],
+  calendar_event_id: string
 ) => {
-  const {
-    data: { user: updatedUser },
-    error,
-  } = await supabaseAdmin.auth.admin.updateUserById(user.id, {
-    app_metadata: {
-      google_access_token: access_token,
-      google_refresh_token: refresh_token,
-    },
-  });
+  const { error } = await supabaseAdmin
+    .from("calendar_events")
+    .insert({ user_id, event_id, calendar_event_id });
   if (error) {
     throw error;
   }
-  return updatedUser;
 };
 
-export const getUserGoogleTokens = async (user: User) => {
-  const access_token = user.app_metadata.google_access_token;
-  const refresh_token = user.app_metadata.google_refresh_token;
-  return { access_token, refresh_token };
-};
+// export const supabaseDeleteUserCalendarEvents = async (
+//   user_id: User["id"],
+//   calendarEventIds: string[]
+// ) => {
+//   const { error } = await supabaseAdmin
+//     .from("calendar_events")
+//     .delete()
+//     .eq("user_id", user_id)
+//     .in("calendar_event_id", calendarEventIds);
+//   if (error) {
+//     throw error;
+//   }
+// };
+
+// export const setUserGoogleTokens = async (
+//   user: User,
+//   access_token: string,
+//   refresh_token: string
+// ) => {
+//   const {
+//     data: { user: updatedUser },
+//     error,
+//   } = await supabaseAdmin.auth.admin.updateUserById(user.id, {
+//     app_metadata: {
+//       google_access_token: access_token,
+//       google_refresh_token: refresh_token,
+//     },
+//   });
+//   if (error) {
+//     throw error;
+//   }
+//   return updatedUser;
+// };
+
+// export const getUserGoogleTokens = async (user: User) => {
+//   const access_token = user.app_metadata.google_access_token;
+//   const refresh_token = user.app_metadata.google_refresh_token;
+//   return { access_token, refresh_token };
+// };
