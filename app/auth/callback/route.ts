@@ -1,5 +1,5 @@
-import { setUserGoogleTokens } from "@/utils/supabase/admin";
 import { createClient } from "@/utils/supabase/server";
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
 async function handleGoogleSignInFlow(request: Request, code: string) {
@@ -11,16 +11,16 @@ async function handleGoogleSignInFlow(request: Request, code: string) {
   if (error) {
     return NextResponse.redirect("/");
   }
-  const { user, session } = data;
+  const { session } = data;
   if (!session.provider_token || !session.provider_refresh_token) {
     return NextResponse.redirect(`${origin}/auth-error`);
   } else {
-    await setUserGoogleTokens(
-      user,
-      session.provider_token,
-      session.provider_refresh_token
-    );
-    await supabase.auth.refreshSession();
+    cookies().set("g_access_token", session.provider_token, {
+      httpOnly: true,
+    });
+    cookies().set("g_refresh_token", session.provider_refresh_token, {
+      httpOnly: true,
+    });
     return NextResponse.redirect(
       `${origin}${requestUrl.searchParams.get("return_to") ?? "/"}`
     );
