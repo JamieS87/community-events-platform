@@ -21,6 +21,9 @@ export default async function UserPurchasedEvents() {
     .select("id,event_id,event:events(id,name)")
     .eq("user_id", user.id);
 
+  const { data: eventsInUserCalendar, error: eventsInUserCalendarError } =
+    await supabase.from("calendar_events").select("*");
+
   if (purchasedEventsError) {
     throw purchasedEventsError;
   }
@@ -45,7 +48,12 @@ export default async function UserPurchasedEvents() {
                   {(event as Tables<"events">).name}
                 </Link>
                 <div className="col-start-4 ml-auto">
-                  <AddToCalendarButton event_id={event_id} />
+                  <AddToCalendarButton
+                    event_id={event_id}
+                    isInCalendar={Boolean(
+                      eventsInUserCalendar?.find((e) => e.event_id === event_id)
+                    )}
+                  />
                 </div>
               </li>
             );
