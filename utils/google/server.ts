@@ -1,6 +1,8 @@
 import { auth } from "@googleapis/calendar";
 import { cookies } from "next/headers";
 
+import { createClient } from "../supabase/server";
+
 export async function createGoogleServerClient(
   access_token: string,
   refresh_token: string
@@ -16,10 +18,7 @@ export async function createGoogleServerClient(
 
   client.on("tokens", async (tokens) => {
     if (tokens.refresh_token) {
-      cookies().set("g_refresh_token", tokens.refresh_token, {
-        httpOnly: true,
-        sameSite: true,
-      });
+      await setGoogleRefreshToken(tokens.refresh_token);
     }
     if (tokens.access_token) {
       cookies().set("g_access_token", tokens.access_token, {
@@ -30,3 +29,22 @@ export async function createGoogleServerClient(
   });
   return client;
 }
+
+export const setGoogleRefreshToken = async (refresh_token: string) => {
+  const supabase = createClient();
+  const { error } = await supabase.rpc("set_google_refresh_token", {
+    refresh_token,
+  });
+  if (error) {
+    throw error;
+  }
+};
+
+export const getGoogleRefreshToken = async () => {
+  const supabase = createClient();
+  const result = await supabase.rpc("get_google_refresh_token");
+  if (result.error) {
+    throw result.error;
+  }
+  return result.data;
+};
