@@ -14,18 +14,22 @@ export default async function UserPurchasedEvents() {
     return redirect("/login");
   }
 
-  const { user } = data;
-
-  const { data: purchasedEvents, error: purchasedEventsError } = await supabase
-    .from("purchased_events")
-    .select("id,event_id,event:events(id,name)")
-    .eq("user_id", user.id);
-
-  const { data: eventsInUserCalendar, error: eventsInUserCalendarError } =
-    await supabase.from("calendar_events").select("*");
+  const [
+    { data: purchasedEvents, error: purchasedEventsError },
+    { data: calendarEvents, error: calendarEventsError },
+  ] = await Promise.all([
+    supabase
+      .from("purchased_events")
+      .select("id,event_id,event:events(id,name)"),
+    supabase.from("calendar_events").select("*"),
+  ]);
 
   if (purchasedEventsError) {
     throw purchasedEventsError;
+  }
+
+  if (calendarEventsError) {
+    throw calendarEventsError;
   }
 
   const hasPurchasedEvents = purchasedEvents.length > 0;
@@ -51,7 +55,9 @@ export default async function UserPurchasedEvents() {
                   <AddToCalendarButton
                     event_id={event_id}
                     isInCalendar={Boolean(
-                      eventsInUserCalendar?.find((e) => e.event_id === event_id)
+                      calendarEvents?.find(
+                        (calendarEvent) => calendarEvent.event_id === event_id
+                      )
                     )}
                   />
                 </div>
