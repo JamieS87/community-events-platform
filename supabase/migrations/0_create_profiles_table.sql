@@ -1,6 +1,7 @@
 create table profiles (
   user_id uuid not null primary key references auth.users (id) on delete cascade,
-  is_staff boolean default false
+  is_staff boolean default false,
+  googleRefreshToken uuid references vault.secrets (id)
 );
 
 alter table profiles
