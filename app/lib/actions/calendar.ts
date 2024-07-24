@@ -5,6 +5,7 @@ import { Tables } from "@/dbtypes";
 import { createCalendarClient } from "@/utils/google/calendar";
 import { insertSupabaseCalendarEvent } from "@/utils/supabase/admin";
 import { cookies } from "next/headers";
+import { getGoogleRefreshToken } from "@/utils/google/server";
 
 export async function addEventToCalendar(
   eventId: Tables<"events">["id"],
@@ -28,9 +29,9 @@ export async function addEventToCalendar(
   const { user } = userData;
 
   const access_token = cookies().get("g_access_token")?.value!!;
-  const refresh_token = cookies().get("g_refresh_token")?.value!!;
+  const refresh_token = await getGoogleRefreshToken();
 
-  if (!access_token || !refresh_token) {
+  if (!refresh_token) {
     return { code: "google_identity_required" };
   }
 
@@ -65,7 +66,7 @@ export async function addEventToCalendar(
   } catch (error) {
     if (error instanceof GaxiosError) {
       switch (error.message) {
-        case "invalid_grant":
+        case "Insufficient Permission":
           return { code: "scopes_required" };
         default:
           throw error;
@@ -75,58 +76,3 @@ export async function addEventToCalendar(
     }
   }
 }
-
-// export async function syncCalendar() {
-//   const supabase = createClient();
-
-//   const { data, error } = await supabase.auth.getUser();
-//   if (error) {
-//     throw error;
-//   }
-
-//   const access_token = cookies().get("g_access_token")?.value!!;
-//   const refresh_token = cookies().get("g_refresh_token")?.value!!;
-
-//   if (!access_token || !refresh_token) {
-//     return { code: "google_identity_required" };
-//   }
-
-//   const calendar = await createCalendarClient(access_token, refresh_token);
-
-//   try {
-//     const [gApiResult, { data: supabaseCalendarEvents, error }] =
-//       await Promise.all([
-//         calendar.events.list({ calendarId: "primary" }),
-//         supabase.from("calendar_events").select("*"),
-//       ]);
-
-//     if (error || gApiResult.status !== 200) {
-//       throw (
-//         error ||
-//         Error(`Google Calendar api returned status: ${gApiResult.status}`)
-//       );
-//     }
-
-//     if (gApiResult.data.items === undefined) {
-//       throw Error(
-//         "Google Calendar API response doesn't contain the expected response"
-//       );
-//     }
-
-//     const googleCalendarEvents = gApiResult.data.items;
-
-//     const deletedGoogleEvents = supabaseCalendarEvents.filter((calEvent) => {
-//       return (
-//         googleCalendarEvents.find(
-//           (gCalEvent) => gCalEvent.id !== calEvent.calendar_event_id
-//         ) === undefined
-//       );
-//     });
-//   } catch (error) {
-//     if (error instanceof GaxiosError) {
-//       if (error.message === "invalid_grant") {
-//         return { code: "scopes_required" };
-//       }
-//     }
-//   }
-// }
