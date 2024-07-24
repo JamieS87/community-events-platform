@@ -140,18 +140,35 @@ export type Database = {
       }
       profiles: {
         Row: {
+          googlerefreshtoken: string | null
           is_staff: boolean | null
           user_id: string
         }
         Insert: {
+          googlerefreshtoken?: string | null
           is_staff?: boolean | null
           user_id: string
         }
         Update: {
+          googlerefreshtoken?: string | null
           is_staff?: boolean | null
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "profiles_googlerefreshtoken_fkey"
+            columns: ["googlerefreshtoken"]
+            isOneToOne: false
+            referencedRelation: "decrypted_secrets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_googlerefreshtoken_fkey"
+            columns: ["googlerefreshtoken"]
+            isOneToOne: false
+            referencedRelation: "secrets"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "profiles_user_id_fkey"
             columns: ["user_id"]
@@ -210,6 +227,16 @@ export type Database = {
           event: Json
         }
         Returns: Json
+      }
+      get_google_refresh_token: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      set_google_refresh_token: {
+        Args: {
+          refresh_token: string
+        }
+        Returns: undefined
       }
     }
     Enums: {
