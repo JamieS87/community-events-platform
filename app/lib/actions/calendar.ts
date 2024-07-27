@@ -28,12 +28,12 @@ export async function addEventToCalendar(
 
   const { user } = userData;
 
-  const access_token = cookies().get("g_access_token")?.value!!;
-  const refresh_token = await getGoogleRefreshToken();
-
-  if (!refresh_token) {
+  if (!user.identities?.find((identity) => identity.provider === "google")) {
     return { code: "google_identity_required" };
   }
+
+  const access_token = cookies().get("g_access_token")?.value!!;
+  const refresh_token = await getGoogleRefreshToken();
 
   const calendar = await createCalendarClient(access_token, refresh_token);
 
