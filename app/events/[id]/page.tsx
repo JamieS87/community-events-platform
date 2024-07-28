@@ -1,6 +1,8 @@
 import PurchaseEventButton from "@/components/purchase-event-button";
+import { Tables } from "@/dbtypes";
 import { createClient } from "@/utils/supabase/server";
 import { CalendarClock } from "lucide-react";
+import { notFound } from "next/navigation";
 
 export default async function EventPage({
   params,
@@ -8,11 +10,17 @@ export default async function EventPage({
   params: { id: string };
 }) {
   const supabase = createClient();
+
   const { data: event, error } = await supabase
     .from("events")
     .select("*")
     .eq("id", params.id)
     .single();
+
+  if (error) {
+    if (error.code === "PGRST116") return notFound();
+    throw error;
+  }
 
   const {
     data: { user },
