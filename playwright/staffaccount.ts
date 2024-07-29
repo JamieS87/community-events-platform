@@ -1,5 +1,4 @@
 import { test as baseTest, expect } from "@playwright/test";
-import config from "../playwright.config";
 import fs from "fs";
 import path from "path";
 import { createClient } from "@supabase/supabase-js";
@@ -13,7 +12,8 @@ dotEnvConfig({ path: ".env" });
 async function acquireAccount(id: number) {
   const supabaseAdmin = createClient<Database>(
     process.env.SUPABASE_API_URL!!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!!
+    process.env.SUPABASE_SERVICE_ROLE_KEY!!,
+    { auth: { persistSession: false, detectSessionInUrl: false } }
   );
 
   const email = `eventstaff${id}@dev.com`;
@@ -36,13 +36,11 @@ async function acquireAccount(id: number) {
 async function releaseAccount(userId: string) {
   const supabaseAdmin = createClient<Database>(
     process.env.SUPABASE_API_URL!!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!!
+    process.env.SUPABASE_SERVICE_ROLE_KEY!!,
+    { auth: { persistSession: false, detectSessionInUrl: false } }
   );
 
-  const { data, error } = await supabaseAdmin.auth.admin.deleteUser(
-    userId,
-    false
-  );
+  const { error } = await supabaseAdmin.auth.admin.deleteUser(userId, false);
   if (error) {
     throw error;
   }
@@ -60,7 +58,7 @@ export const test = baseTest.extend<{}, { workerStorageState: string }>({
       const id = test.info().parallelIndex;
       const fileName = path.resolve(
         test.info().project.outputDir,
-        `.auth/${id}.json`
+        `.auth/staff_${id}.json`
       );
       if (fs.existsSync(fileName)) {
         // Reuse existing authentication state if any.
@@ -97,7 +95,7 @@ export const test = baseTest.extend<{}, { workerStorageState: string }>({
       // // Wait for the final URL to ensure that the cookies are actually set.
       // await page.waitForURL(baseURL);
       // Alternatively, you can wait until the page reaches a state where all cookies are set.
-      await expect(page.getByTestId("auth-avatar")).toBeVisible();
+      await page.waitForURL("/", { timeout: 30000 });
 
       // End of authentication steps.
 
