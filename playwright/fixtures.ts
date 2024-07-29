@@ -1,5 +1,4 @@
 import { test as baseTest, expect } from "@playwright/test";
-import config from "../playwright.config";
 import fs from "fs";
 import path from "path";
 
@@ -36,7 +35,10 @@ export const test = baseTest.extend<{}, { workerStorageState: string }>({
       }
 
       // Important: make sure we authenticate in a clean environment by unsetting storage state.
-      const page = await browser.newPage({ storageState: undefined });
+      const page = await browser.newPage({
+        storageState: undefined,
+        baseURL: "http://localhost:3000",
+      });
 
       // Acquire a unique account, for example create a new one.
       // Alternatively, you can have a list of precreated accounts for testing.
@@ -44,10 +46,8 @@ export const test = baseTest.extend<{}, { workerStorageState: string }>({
       // can run tests at the same time without interference.
       const account = await acquireAccount(id);
 
-      const baseURL = config.use?.baseURL ?? "http://localhost:3000";
-
       // Perform authentication steps. Replace these actions with your own.
-      await page.goto(`${baseURL}/login`);
+      await page.goto("/login");
       await page.getByRole("textbox", { name: "Email" }).click();
       await page.getByRole("textbox", { name: "Email" }).fill(account.email);
       await page
@@ -58,7 +58,7 @@ export const test = baseTest.extend<{}, { workerStorageState: string }>({
       //
       // Sometimes login flow sets cookies in the process of several redirects.
       // Wait for the final URL to ensure that the cookies are actually set.
-      await page.waitForURL(baseURL);
+      await page.waitForURL("/");
       // Alternatively, you can wait until the page reaches a state where all cookies are set.
       await expect(page.getByTestId("auth-avatar")).toBeVisible();
 
