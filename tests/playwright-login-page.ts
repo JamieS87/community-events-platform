@@ -29,7 +29,7 @@ export class LoginPage {
     await this.email.fill(email);
     await this.password.click();
     await this.password.fill(password);
-    await this.signInButton.click();
+    await this.signInButton.click({ timeout: 30000 });
     await expect(this.page).toHaveURL("/");
   }
 }
