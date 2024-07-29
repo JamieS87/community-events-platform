@@ -1,6 +1,6 @@
 import { expect, type Locator, type Page } from "@playwright/test";
 
-export class LoginPage {
+export class AdminPage {
   readonly page: Page;
   readonly createEventButton: Locator;
 
@@ -16,6 +16,8 @@ export class LoginPage {
 
   async createEvent() {
     await this.createEventButton.click();
-    await expect(this.page).toHaveURL('/admin')
+    await expect(
+      this.page.getByRole("dialog", { name: "Create Event" })
+    ).toBeVisible();
   }
 }
