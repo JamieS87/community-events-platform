@@ -21,6 +21,8 @@ import { Button } from "../ui/button";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import GoogleIcon from "../google-icon";
+import { AlertTriangle } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 
 export const LoginForm = () => {
   const [signInState, signInAction] = useFormState(signIn, null);
@@ -33,6 +35,8 @@ export const LoginForm = () => {
       password: "",
     },
   });
+
+  const searchParams = useSearchParams();
 
   return (
     <Card className="max-w-md w-full my-auto">
@@ -68,11 +72,16 @@ export const LoginForm = () => {
                 })}
               </ul>
             )}
-            {"message" in signInState && <p>{signInState.message}</p>}
+            {"message" in signInState && (
+              <p className="flex items-center justify-center border rounded-lg px-6 py-4 border-red-300 font-semibold">
+                <AlertTriangle className="w-6 h-6 mr-2" />
+                {signInState.message}
+              </p>
+            )}
           </div>
         )}
         <Form {...form}>
-          <form className="flex flex-col space-y-4 max-w-sm w-full">
+          <form className="flex flex-col space-y-4 w-full">
             <FormField
               control={form.control}
               name="email"
@@ -126,7 +135,10 @@ export const LoginForm = () => {
         <form className="flex">
           <SubmitButton
             variant="outline"
-            formAction={signInWithGoogle}
+            formAction={signInWithGoogle.bind(
+              null,
+              searchParams.get("next") ?? "/"
+            )}
             loadingIcon={true}
             pendingText="Signing in with google"
             className="mx-auto"

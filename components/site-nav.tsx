@@ -7,7 +7,9 @@ export default async function SiteNav() {
       {/* left */}
       <div className="w-full flex items-center">
         <div className="flex-1 flex items-center">
-          <Link href="/">Brand</Link>
+          <Link href="/" className="font-bold text-2xl">
+            CEP
+          </Link>
         </div>
         <div className="flex-1 flex items-center justify-end">
           <SiteAuth />

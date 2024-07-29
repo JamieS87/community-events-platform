@@ -3,35 +3,43 @@
 import { Tables } from "@/dbtypes";
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
+import AddToCalendarButton from "./add-to-calendar-button";
+import { redirect } from "next/navigation";
 
 export default async function UserPurchasedEvents() {
   const supabase = createClient();
-  const {
-    data: { user },
-    error: userError,
-  } = await supabase.auth.getUser();
+  const { data, error } = await supabase.auth.getUser();
 
-  if (userError) {
-    throw userError;
+  if (error) {
+    return redirect("/login");
   }
 
-  if (!user || userError) {
-    throw "Encountered an error retrieving user";
-  }
-
-  const { data: purchasedEvents, error: purchasedEventsError } = await supabase
-    .from("purchased_events")
-    .select("id,event_id,event:events(id,name)")
-    .eq("user_id", user.id);
+  const [
+    { data: purchasedEvents, error: purchasedEventsError },
+    { data: calendarEvents, error: calendarEventsError },
+  ] = await Promise.all([
+    supabase
+      .from("purchased_events")
+      .select("id,event_id,event:events(id,name)"),
+    supabase.from("calendar_events").select("*"),
+  ]);
 
   if (purchasedEventsError) {
     throw purchasedEventsError;
   }
 
+  if (calendarEventsError) {
+    throw calendarEventsError;
+  }
+
+  const hasPurchasedEvents = purchasedEvents.length > 0;
+
   return (
     <div data-testid="purchased-events">
-      {purchasedEvents.length === 0 ? (
-        "No purchased events to display"
+      {!hasPurchasedEvents ? (
+        <p className="text-center text-lg">
+          No purchased events to display yet
+        </p>
       ) : (
         <ul>
           {purchasedEvents.map(({ id, event_id, event }) => {
@@ -43,6 +51,16 @@ export default async function UserPurchasedEvents() {
                 <Link href={`/events/${event_id}`}>
                   {(event as Tables<"events">).name}
                 </Link>
+                <div className="col-start-4 ml-auto">
+                  <AddToCalendarButton
+                    event_id={event_id}
+                    isInCalendar={Boolean(
+                      calendarEvents?.find(
+                        (calendarEvent) => calendarEvent.event_id === event_id
+                      )
+                    )}
+                  />
+                </div>
               </li>
             );
           })}

@@ -1,25 +1,58 @@
+import { setGoogleRefreshToken } from "@/utils/google/server";
 import { createClient } from "@/utils/supabase/server";
+import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 
-export async function GET(request: Request) {
-  // The `/auth/callback` route is required for the server-side auth flow implemented
-  // by the SSR package. It exchanges an auth code for the user's session.
-  // https://supabase.com/docs/guides/auth/server-side/nextjs
+async function handleGoogleSignInFlow(request: Request, code: string) {
+  const requestUrl = new URL(request.url);
+  const { origin } = requestUrl;
 
+  const supabase = createClient();
+  const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+  if (error) {
+    return NextResponse.redirect("/");
+  }
+
+  const { session } = data;
+  if (!session.provider_token || !session.provider_refresh_token) {
+    return NextResponse.redirect(`${origin}/auth-error`);
+  } else {
+    await setGoogleRefreshToken(session.provider_refresh_token);
+    cookies().set("g_access_token", session.provider_token, {
+      httpOnly: true,
+    });
+    return NextResponse.redirect(
+      `${origin}${requestUrl.searchParams.get("return_to") ?? "/"}`
+    );
+  }
+}
+
+export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
   const code = requestUrl.searchParams.get("code");
   const origin = requestUrl.origin;
-  const next = requestUrl.searchParams.get("next") ?? "/";
 
-  if (code) {
-    const supabase = createClient();
-    const { data, error } = await supabase.auth.exchangeCodeForSession(code);
-    if (error) {
-      return NextResponse.redirect(`${origin}/auth-code-error`);
-    } else {
-      return NextResponse.redirect(`${origin}/${next}`);
-    }
-  } else {
-    return NextResponse.redirect(`${origin}/auth-code-error`);
+  const flow = requestUrl.searchParams.get("flow");
+
+  //Redirect to error page if code is missing
+  if (!code) return NextResponse.redirect(`${origin}/auth-code-error`);
+
+  const allowedFlows = [
+    "google-signin",
+    "google-incremental-auth",
+    "google-link-account",
+    "signup",
+  ];
+
+  //validate the flow query parameter, redirect if not allowed
+  if (!allowedFlows.find((allowedFlow) => allowedFlow === flow)) {
+    return NextResponse.redirect(`${origin}/auth-error`);
+  }
+
+  switch (flow) {
+    case "google-signin":
+    case "google-incremental-auth":
+    case "google-link-account":
+      return handleGoogleSignInFlow(request, code);
   }
 }

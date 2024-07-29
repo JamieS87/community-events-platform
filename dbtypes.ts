@@ -34,6 +34,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      calendar_events: {
+        Row: {
+          calendar_event_id: string
+          event_id: number
+          id: number
+          user_id: string
+        }
+        Insert: {
+          calendar_event_id: string
+          event_id: number
+          id?: never
+          user_id: string
+        }
+        Update: {
+          calendar_event_id?: string
+          event_id?: number
+          id?: never
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "calendar_events_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "calendar_events_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       customers: {
         Row: {
           customer_id: string
@@ -104,18 +140,35 @@ export type Database = {
       }
       profiles: {
         Row: {
+          googlerefreshtoken: string | null
           is_staff: boolean | null
           user_id: string
         }
         Insert: {
+          googlerefreshtoken?: string | null
           is_staff?: boolean | null
           user_id: string
         }
         Update: {
+          googlerefreshtoken?: string | null
           is_staff?: boolean | null
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "profiles_googlerefreshtoken_fkey"
+            columns: ["googlerefreshtoken"]
+            isOneToOne: false
+            referencedRelation: "decrypted_secrets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_googlerefreshtoken_fkey"
+            columns: ["googlerefreshtoken"]
+            isOneToOne: false
+            referencedRelation: "secrets"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "profiles_user_id_fkey"
             columns: ["user_id"]
@@ -174,6 +227,16 @@ export type Database = {
           event: Json
         }
         Returns: Json
+      }
+      get_google_refresh_token: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      set_google_refresh_token: {
+        Args: {
+          refresh_token: string
+        }
+        Returns: undefined
       }
     }
     Enums: {
