@@ -189,6 +189,7 @@ export const CreateEventForm = () => {
                         </FormControl>
                         <PopoverContent>
                           <Calendar
+                            data-testid="start-date-calendar"
                             mode="single"
                             selected={field.value}
                             onSelect={(e) => {
@@ -236,6 +237,7 @@ export const CreateEventForm = () => {
                         </FormControl>
                         <PopoverContent>
                           <Calendar
+                            data-testid="end-date-calendar"
                             mode="single"
                             selected={field.value}
                             onSelect={(e) => {
