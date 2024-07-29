@@ -1,4 +1,4 @@
-import { test as baseTest, expect } from "@playwright/test";
+import { test as baseTest } from "@playwright/test";
 import fs from "fs";
 import path from "path";
 import { createClient } from "@supabase/supabase-js";
