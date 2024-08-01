@@ -13,6 +13,7 @@ create table events (
   price bigint not null default 0 constraint zero_or_positive check (price >= 0),
   created_at timestamp not null default current_timestamp,
   updated_at timestamp default null,
+  thumbnail text default null,
   constraint valid_dates_times check (
     ( ((start_date = end_date) and (start_time < end_time)) or ((start_date < end_date) and ((start_date + start_time) < (end_date + end_time))) )
   )
