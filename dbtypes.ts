@@ -106,6 +106,7 @@ export type Database = {
           published: boolean
           start_date: string
           start_time: string
+          thumbnail: string | null
           updated_at: string | null
         }
         Insert: {
@@ -120,6 +121,7 @@ export type Database = {
           published?: boolean
           start_date?: string
           start_time?: string
+          thumbnail?: string | null
           updated_at?: string | null
         }
         Update: {
@@ -134,6 +136,7 @@ export type Database = {
           published?: boolean
           start_date?: string
           start_time?: string
+          thumbnail?: string | null
           updated_at?: string | null
         }
         Relationships: []
