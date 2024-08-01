@@ -20,7 +20,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { z } from "zod";
 import { createEventFormSchema } from "./create-event-form-schema";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "../ui/button";
 import {
@@ -43,12 +43,17 @@ import {
   DialogDescription,
   DialogHeader,
 } from "@/components/ui/dialog";
-import { SubmitButton } from "../submit-button";
+import Image from "next/image";
+import { CreateEventSubmitButton } from "../create-event-submit-button";
+import { uploadEventThumbnail } from "@/utils/supabase/events";
 export const CreateEventForm = () => {
   const router = useRouter();
   const [state, createEventAction] = useFormState(createEvent, null);
   const [open, setOpen] = useState(false);
+  const [thumbnailPreview, setThumbnailPreview] = useState<File | null>(null);
+  const [saving, setSaving] = useState(false);
 
+  //React-hook-form form
   const form = useForm<z.infer<typeof createEventFormSchema>>({
     mode: "all",
     resolver: zodResolver(createEventFormSchema),
@@ -59,25 +64,77 @@ export const CreateEventForm = () => {
       end_date: new Date(),
       start_time: "12:00",
       end_time: "20:00",
-      price: 1.0,
+      price: 0,
       pricing_model: "free",
+      thumbnail: "",
     },
   });
 
   useEffect(() => {
-    if (form.getValues("pricing_model") === "free") {
-      form.setValue("price", 0);
-    }
+    const formWatcher = form.watch((values, { type, name }) => {
+      if (type === "change") {
+        if (name === "pricing_model") {
+          if (values.pricing_model === "free") {
+            console.log("Setting price to 0");
+            form.setValue("price", 0, { shouldValidate: true });
+          }
+        }
+      }
+    });
+
     if (state) {
+      setSaving(false);
       if (state.code === "success") {
         setOpen(false);
+        form.reset();
+        setThumbnailPreview(null);
         router.refresh();
       }
     }
+
+    return () => formWatcher.unsubscribe();
   }, [state, form, router]);
 
+  const handleOpenChange = (open: boolean) => {
+    if (!open) {
+      form.setValue("thumbnail", undefined);
+      setThumbnailPreview(null);
+    }
+    setOpen(open);
+  };
+
+  const onSubmit: SubmitHandler<z.infer<typeof createEventFormSchema>> = async (
+    values
+  ) => {
+    const thumbnailFile = values.thumbnail;
+
+    let fullPath: string;
+    try {
+      const data = await uploadEventThumbnail(thumbnailFile);
+      fullPath = data.fullPath;
+    } catch (error) {
+      form.setError("thumbnail", {
+        message:
+          "An unknown error occurred while uploading the thumbnail. Try choosing a different thumbnail.",
+      });
+      return;
+    }
+
+    const formData = new FormData();
+
+    Object.entries(values).forEach(([fieldName, fieldValue]) => {
+      if (fieldName === "thumbnail") {
+        formData.append("thumbnail", fullPath);
+      } else {
+        formData.append(fieldName, fieldValue);
+      }
+    });
+    setSaving(true);
+    createEventAction(formData);
+  };
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button>
           <PlusIcon className="w-6 h-6" />
@@ -90,7 +147,10 @@ export const CreateEventForm = () => {
           <DialogDescription>Create a new event</DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form className="flex flex-col space-y-4 max-wm-full">
+          <form
+            className="flex flex-col space-y-4 max-w-full"
+            onSubmit={form.handleSubmit(onSubmit)}
+          >
             <FormField
               name="name"
               control={form.control}
@@ -98,7 +158,11 @@ export const CreateEventForm = () => {
                 <FormItem>
                   <FormLabel className="text-foreground">Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Untitled Event" {...field} />
+                    <Input
+                      placeholder="Untitled Event"
+                      {...field}
+                      autoComplete="off"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -117,6 +181,48 @@ export const CreateEventForm = () => {
                 </FormItem>
               )}
             />
+            <div className="aspect-video w-full border flex items-center justify-center">
+              {thumbnailPreview ? (
+                <Image
+                  src={URL.createObjectURL(thumbnailPreview)}
+                  alt="event image preview"
+                  className="aspect-video object-cover"
+                  width={1024}
+                  height={1024}
+                />
+              ) : (
+                <span className="text-sm">Thumbnail Preview</span>
+              )}
+            </div>
+            <FormField
+              name="thumbnail"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-foreground">Thumbnail</FormLabel>
+                  <FormControl>
+                    <Input
+                      name={field.name}
+                      type="file"
+                      value={undefined}
+                      accept="image/webp,image/png,image/jpeg,image/jfif"
+                      onChange={(e) => {
+                        field.onChange({
+                          target: {
+                            value: (e.target.files && e.target.files[0]) || "",
+                            name: field.name,
+                          },
+                        });
+                        setThumbnailPreview(
+                          (e.target.files && e.target.files[0]) || null
+                        );
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               name="pricing_model"
               control={form.control}
@@ -124,8 +230,8 @@ export const CreateEventForm = () => {
                 <FormItem>
                   <FormLabel>Pricing Model</FormLabel>
                   <Select
-                    name={field.name}
-                    value={field.value}
+                    // name={field.name}
+                    // value={field.value}
                     onValueChange={field.onChange}
                   >
                     <FormControl>
@@ -150,13 +256,25 @@ export const CreateEventForm = () => {
                 <FormItem>
                   <FormLabel className="text-foreground">Price</FormLabel>
                   <FormControl>
-                    <Input
-                      type="number"
-                      placeholder="1.00"
-                      {...field}
-                      readOnly={form.getValues().pricing_model === "free"}
-                    />
+                    <div className="flex">
+                      <div className="flex items-center font-semibold min-h-full px-4 rounded-tl-md rounded-bl-md border-t border-b border-l border-r">
+                        £
+                      </div>
+                      <Input
+                        className="border-l-0 rounded-tl-none rounded-bl-none"
+                        type="number"
+                        placeholder="1.00"
+                        {...field}
+                        readOnly={form.getValues().pricing_model === "free"}
+                      />
+                    </div>
                   </FormControl>
+                  {form.getValues().pricing_model === "payf" && (
+                    <p className="text-sm font-semibold text-muted-foreground">
+                      For pay as you feel events, price represents a recommended
+                      price
+                    </p>
+                  )}
                   <FormMessage />
                 </FormItem>
               )}
@@ -282,13 +400,13 @@ export const CreateEventForm = () => {
                 </FormItem>
               )}
             />
-            <SubmitButton
-              formAction={createEventAction}
-              pendingText="Saving..."
+            <CreateEventSubmitButton
+              pending={saving}
+              pendingText="Saving"
               loadingIcon={true}
             >
               Save
-            </SubmitButton>
+            </CreateEventSubmitButton>
           </form>
         </Form>
       </DialogContent>
