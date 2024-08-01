@@ -1,5 +1,5 @@
 import PurchaseEventButton from "@/components/purchase-event-button";
-import { Tables } from "@/dbtypes";
+import Image from "next/image";
 import { createClient } from "@/utils/supabase/server";
 import { CalendarClock } from "lucide-react";
 import { notFound } from "next/navigation";
@@ -39,7 +39,15 @@ export default async function EventPage({
           </span>
         )}
       </div>
-      <div className="aspect-video w-full"></div>
+      {event.thumbnail && (
+        <Image
+          src={`http://127.0.0.1:54321/storage/v1/object/public/${event.thumbnail}`}
+          alt="event image preview"
+          className="w-full aspect-video object-cover"
+          width={1024}
+          height={1024}
+        />
+      )}
       <h3 className="font-semibold text-sm">About</h3>
       <p className="text-sm">{event.description}</p>
       <div className="flex items-center">
