@@ -29,18 +29,22 @@ export default async function ProfilePage() {
   );
 
   return (
-    <div className="flex flex-col p-2 space-y-4 w-full max-w-6xl mx-auto">
+    <div className="flex flex-col p-2 gap-y-8 mt-8 w-full max-w-7xl mx-auto">
       <div
         className="flex items-center mx-auto space-x-4"
         data-testid="profile-user"
       >
-        <UserAvatar user={user} data-testid="profile-avatar" />
+        <UserAvatar
+          user={user}
+          data-testid="profile-avatar"
+          className="w-16 h-16"
+        />
         <div className="flex flex-col">
           <p>{getUserFullName(user) || ""}</p>
           <p className="font-semibold text-md">{user.email}</p>
         </div>
       </div>
-      <div>
+      <div className="flex items-center justify-center">
         {!googleIdentity && <LinkGoogleAccountButton />}
         {googleIdentity && identityData.identities.length > 1 && (
           <div className="flex items-center">
@@ -52,9 +56,8 @@ export default async function ProfilePage() {
           </div>
         )}
       </div>
-      <div className="flex items-center justify-between">
-        <h2 className="font-semibold text-xl">My Events</h2>
-        {/* <SyncCalendarButton /> */}
+      <div className="flex items-center justify-between border-b pb-4">
+        <h2 className="font-semibold text-xl">My Purchased Events</h2>
       </div>
       <UserPurchasedEvents />
     </div>
