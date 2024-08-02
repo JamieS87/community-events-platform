@@ -19,7 +19,13 @@ import { SubmitButton } from "@/components/submit-button";
 import { loginFormSchema } from "@/components/forms/login-form-schema";
 import { Button } from "../ui/button";
 import Link from "next/link";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../ui/card";
 import GoogleIcon from "../google-icon";
 import { AlertTriangle } from "lucide-react";
 import { useSearchParams } from "next/navigation";
@@ -42,6 +48,7 @@ export const LoginForm = () => {
     <Card className="max-w-md w-full my-auto">
       <CardHeader>
         <CardTitle>Login</CardTitle>
+        <CardDescription>Log in or sign up for an account</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {signInState && (
