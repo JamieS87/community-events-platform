@@ -1,4 +1,5 @@
-import { createClient } from "./client";
+import { createClient } from "../supabase/client";
+
 export const uploadEventThumbnail = async (
   file: File,
   upsert: boolean = true

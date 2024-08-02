@@ -18,7 +18,7 @@ export default async function AdminPage() {
   }
 
   return (
-    <div className="flex flex-col space-y-4 w-full p-2 max-w-6xl">
+    <div className="flex flex-col space-y-4 w-full p-2 max-w-7xl">
       <div className="flex w-full items-center justify-between">
         <h2>Events</h2>
         <CreateEventForm />

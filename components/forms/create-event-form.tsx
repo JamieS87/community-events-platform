@@ -45,7 +45,7 @@ import {
 } from "@/components/ui/dialog";
 import Image from "next/image";
 import { CreateEventSubmitButton } from "../create-event-submit-button";
-import { uploadEventThumbnail } from "@/utils/supabase/events";
+import { uploadEventThumbnail } from "@/utils/events/client";
 export const CreateEventForm = () => {
   const router = useRouter();
   const [state, createEventAction] = useFormState(createEvent, null);
@@ -229,11 +229,7 @@ export const CreateEventForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Pricing Model</FormLabel>
-                  <Select
-                    // name={field.name}
-                    // value={field.value}
-                    onValueChange={field.onChange}
-                  >
+                  <Select onValueChange={field.onChange}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Pricing Model" />
