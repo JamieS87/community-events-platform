@@ -37,9 +37,12 @@ export default async function UserPurchasedEvents() {
   return (
     <div data-testid="purchased-events">
       {!hasPurchasedEvents ? (
-        <p className="text-center text-lg">
-          No purchased events to display yet
-        </p>
+        <div className="text-center text-md text-muted-foreground">
+          <span className="block">No purchased events to display yet.</span>
+          <span>
+            Note: Recently purchased events may not appear here immediately.
+          </span>
+        </div>
       ) : (
         <ul>
           {purchasedEvents.map(({ id, event_id, event }) => {
