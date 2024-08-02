@@ -17,7 +17,13 @@ import { z } from "zod";
 import { signUp } from "@/app/lib/actions/auth";
 import { SubmitButton } from "@/components/submit-button";
 import { signUpFormSchema } from "@/components/forms/signup-form-schema";
-import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export const SignUpForm = () => {
   const [signUpState, signUpAction] = useFormState(signUp, null);
@@ -38,6 +44,7 @@ export const SignUpForm = () => {
     <Card className="max-w-md w-full my-auto">
       <CardHeader>
         <CardTitle>Sign Up</CardTitle>
+        <CardDescription>Create an account</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         {signUpState && (
