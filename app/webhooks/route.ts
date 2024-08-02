@@ -4,6 +4,7 @@ import {
 } from "@/utils/supabase/admin";
 import { headers } from "next/headers";
 import Stripe from "stripe";
+
 export async function POST(request: Request) {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!!);
   const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET!!;
@@ -53,7 +54,6 @@ export async function POST(request: Request) {
           status: 400,
         });
       }
-      break;
   }
   return new Response("unhandled webhook event type", { status: 400 });
 }
