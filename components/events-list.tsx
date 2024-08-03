@@ -1,4 +1,5 @@
 import { Tables } from "@/dbtypes";
+import { cn } from "@/lib/utils";
 import { ReactNode } from "react";
 
 type EventsListHeaderProps =
@@ -11,10 +12,14 @@ type EventsListHeaderProps =
 export const EventsListHeader = async ({
   children,
   loading = false,
-}: EventsListHeaderProps) => {
+  ...props
+}: EventsListHeaderProps & { [k: string]: any }) => {
   const classNames = {
-    loading: "max-w-[200px] animate-pulse h-6 bg-gray-100",
-    notLoading: "text-xl font-semibold",
+    loading: cn([
+      "max-w-[200px] animate-pulse h-6 bg-gray-100",
+      props.className,
+    ]),
+    notLoading: cn(["text-xl font-semibold", props.className]),
   };
 
   return (
@@ -24,18 +29,14 @@ export const EventsListHeader = async ({
   );
 };
 
+type Event = Pick<
+  Tables<"events">,
+  "id" | "name" | "thumbnail" | "pricing_model" | "price" | "start_date"
+>;
+
 type EventsListItemsProps = {
-  render: ({
-    event,
-  }: {
-    event: Pick<
-      Tables<"events">,
-      "id" | "name" | "thumbnail" | "pricing_model"
-    >;
-  }) => ReactNode;
-  getter: () => Promise<
-    Pick<Tables<"events">, "id" | "name" | "thumbnail" | "pricing_model">[]
-  >;
+  render: ({ event }: { event: Event }) => ReactNode;
+  getter: () => Promise<Event[]>;
   [k: string]: any;
 };
 
@@ -45,6 +46,13 @@ export const EventsListItems = async ({
   ...props
 }: EventsListItemsProps) => {
   const events = await getter();
+  if (!events.length) {
+    return (
+      <p className="w-full text-center shadow-sm border py-8">
+        No events to display yet
+      </p>
+    );
+  }
   return (
     <ul {...props}>
       {events.map((event) => {
@@ -56,7 +64,7 @@ export const EventsListItems = async ({
 
 type LoadingEventsListItemsProps = {
   count: number;
-  render: () => ReactNode;
+  render: (key: number) => ReactNode;
   [k: string]: any;
 };
 
@@ -67,7 +75,7 @@ export const LoadingEventsListItems = async ({
 }: LoadingEventsListItemsProps) => {
   const loadingEvents = [];
   for (let i = 0; i < count; i++) {
-    loadingEvents.push(render());
+    loadingEvents.push(render(i));
   }
   return <ul {...props}>{loadingEvents}</ul>;
 };

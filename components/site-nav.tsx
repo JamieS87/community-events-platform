@@ -1,7 +1,24 @@
 import Link from "next/link";
 import SiteAuth from "./site-auth";
+import { createClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
+import { hasStaffClaim } from "@/app/lib/utils";
 
 export default async function SiteNav() {
+  const supabase = createClient();
+
+  const { data } = await supabase.auth.getUser();
+
+  const { data: sessionData, error: getSessionError } =
+    await supabase.auth.getSession();
+  if (getSessionError) {
+    return redirect("/login");
+  }
+
+  const isStaff = sessionData.session
+    ? hasStaffClaim(sessionData.session)
+    : false;
+
   return (
     <nav className="w-full flex items-center justify-center border-b">
       {/* left */}
@@ -13,7 +30,7 @@ export default async function SiteNav() {
             </Link>
           </div>
           <div className="flex-1 flex items-center justify-end">
-            <SiteAuth />
+            <SiteAuth user={data.user} isStaff={isStaff} />
           </div>
         </div>
       </div>

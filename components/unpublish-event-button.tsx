@@ -20,8 +20,10 @@ import { Loader2 } from "lucide-react";
 
 export default function UnpublishEventButton({
   eventId,
+  onUnpublishEvent
 }: {
   eventId: Tables<"events">["id"];
+  onUnpublishEvent?: (eventId: number) => void
 }) {
   const [unpublishConfirmOpen, setunpublishConfirmOpen] = useState(false);
   const [pending, setPending] = useState(false);
@@ -56,6 +58,9 @@ export default function UnpublishEventButton({
           <AlertDialogAction
             onClick={async () => {
               setPending(true);
+              if(onUnpublishEvent) {
+                onUnpublishEvent(eventId);
+              }
               const supabase = createClient();
               const { error } = await supabase
                 .from("events")

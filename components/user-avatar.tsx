@@ -1,4 +1,4 @@
-"use server";
+"use client";
 
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { getUserFullName } from "@/utils/user/utils";
@@ -9,7 +9,7 @@ export type UserAvatarProps = {
   [k: string]: any;
 };
 
-export default async function UserAvatar({ user, ...props }: UserAvatarProps) {
+export default function UserAvatar({ user, ...props }: UserAvatarProps) {
   const avatarFallback = getUserFullName(user)?.slice(0, 1)[0];
   return (
     <Avatar {...props} data-testid="auth-avatar">
