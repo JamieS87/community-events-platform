@@ -6,6 +6,7 @@ import { createEventFormSchema } from "@/components/forms/create-event-form-sche
 import { format } from "date-fns";
 import { Tables } from "@/dbtypes";
 import { ZodIssue } from "zod";
+import { revalidatePath } from "next/cache";
 
 export async function createEvent(
   prev:
@@ -40,4 +41,41 @@ export async function createEvent(
   }
 
   return { code: "success", payload: newEvent };
+}
+
+export async function deleteEvent(eventId: Tables<"events">["id"]) {
+  const supabase = createClient();
+  const { error } = await supabase.from("events").delete().eq("id", eventId);
+  if (error) {
+    throw error;
+  }
+  revalidatePath("");
+}
+
+export async function publishEvent(eventId: Tables<"events">["id"]) {
+  const supabase = createClient();
+
+  const { error } = await supabase
+    .from("events")
+    .update({ published: true })
+    .eq("id", eventId);
+
+  if (error) {
+    throw error;
+  }
+  revalidatePath("");
+}
+
+export async function unpublishEvent(eventId: Tables<"events">["id"]) {
+  const supabase = createClient();
+
+  const { error } = await supabase
+    .from("events")
+    .update({ published: false })
+    .eq("id", eventId);
+
+  if (error) {
+    throw error;
+  }
+  revalidatePath("");
 }
