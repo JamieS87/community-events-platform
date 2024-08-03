@@ -15,6 +15,8 @@ import {
 import { Suspense } from "react";
 
 export default async function Index() {
+  const perSectionEventCount = 6;
+
   return (
     <div className="w-full max-w-7xl mx-auto flex flex-col gap-20">
       <div className="w-full flex flex-col gap-20 px-2">
@@ -25,21 +27,23 @@ export default async function Index() {
             <Suspense
               fallback={
                 <>
-                  <EventsListHeader loading={true} />
+                  <EventsListHeader className="mb-4 text-2xl" loading={true} />
                   <LoadingEventsListItems
-                    className="grid grid-cols-3 gap-4"
-                    count={5}
-                    render={() => {
-                      return <LoadingEventCard />;
+                    className="grid grid-cols-1 md:grid-cols-3 gap-4"
+                    count={perSectionEventCount}
+                    render={(key) => {
+                      return <LoadingEventCard key={key} />;
                     }}
                   />
                 </>
               }
             >
-              <EventsListHeader>Latest events</EventsListHeader>
+              <EventsListHeader className="mb-4 text-2xl">
+                Latest events
+              </EventsListHeader>
               <EventsListItems
-                className="grid grid-cols-3 gap-4"
-                getter={getLatestEvents.bind(null, 5)}
+                className="grid grid-cols-1 md:grid-cols-3 gap-4"
+                getter={getLatestEvents.bind(null, perSectionEventCount)}
                 render={({ event }) => {
                   return (
                     <li key={event.id}>
@@ -55,21 +59,23 @@ export default async function Index() {
             <Suspense
               fallback={
                 <>
-                  <EventsListHeader loading={true} />
+                  <EventsListHeader className="mb-4 text-2xl" loading={true} />
                   <LoadingEventsListItems
-                    className="grid grid-cols-3 gap-4"
-                    count={5}
-                    render={() => {
-                      return <LoadingEventCard />;
+                    className="grid grid-cols-1 md:grid-cols-3 gap-4"
+                    count={perSectionEventCount}
+                    render={(key) => {
+                      return <LoadingEventCard key={key} />;
                     }}
                   />
                 </>
               }
             >
-              <EventsListHeader>Paid events</EventsListHeader>
+              <EventsListHeader className="mb-4 text-2xl">
+                Paid events
+              </EventsListHeader>
               <EventsListItems
-                className="grid grid-cols-3 gap-4"
-                getter={getLatestPaidEvents.bind(null, 5)}
+                className="grid grid-cols-1 md:grid-cols-3 gap-4"
+                getter={getLatestPaidEvents.bind(null, perSectionEventCount)}
                 render={({ event }) => {
                   return (
                     <li key={event.id}>
@@ -85,21 +91,23 @@ export default async function Index() {
             <Suspense
               fallback={
                 <>
-                  <EventsListHeader loading={true} />
+                  <EventsListHeader className="mb-4 text-2xl" loading={true} />
                   <LoadingEventsListItems
-                    className="grid grid-cols-3 gap-4"
-                    count={5}
-                    render={() => {
-                      return <LoadingEventCard />;
+                    className="grid grid-cols-1 md:grid-cols-3 gap-4"
+                    count={perSectionEventCount}
+                    render={(key) => {
+                      return <LoadingEventCard key={key} />;
                     }}
                   />
                 </>
               }
             >
-              <EventsListHeader>Pay as you feel events</EventsListHeader>
+              <EventsListHeader className="mb-4 text-2xl">
+                Pay as you feel events
+              </EventsListHeader>
               <EventsListItems
-                className="grid grid-cols-3 gap-4"
-                getter={getLatestPAYFEvents.bind(null, 5)}
+                className="grid grid-cols-1 md:grid-cols-3 gap-4"
+                getter={getLatestPAYFEvents.bind(null, perSectionEventCount)}
                 render={({ event }) => {
                   return (
                     <li key={event.id}>
@@ -115,21 +123,23 @@ export default async function Index() {
             <Suspense
               fallback={
                 <>
-                  <EventsListHeader loading={true} />
+                  <EventsListHeader className="mb-4 text-2xl" loading={true} />
                   <LoadingEventsListItems
-                    className="grid grid-cols-3 gap-4"
-                    count={5}
-                    render={() => {
-                      return <LoadingEventCard />;
+                    className="grid grid-cols-1 md:grid-cols-3 gap-4"
+                    count={perSectionEventCount}
+                    render={(key) => {
+                      return <LoadingEventCard key={key} />;
                     }}
                   />
                 </>
               }
             >
-              <EventsListHeader>Free events</EventsListHeader>
+              <EventsListHeader className="mb-4 text-2xl">
+                Free events
+              </EventsListHeader>
               <EventsListItems
-                className="grid grid-cols-3 gap-4"
-                getter={getLatestFreeEvents.bind(null, 5)}
+                className="grid grid-cols-1 md:grid-cols-3 gap-4"
+                getter={getLatestFreeEvents.bind(null, perSectionEventCount)}
                 render={({ event }) => {
                   return (
                     <li key={event.id}>
