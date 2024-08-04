@@ -113,6 +113,7 @@ export const signOut = async () => {
   cookies().delete("g_access_token");
   cookies().delete("g_refresh_token");
   const { error } = await supabase.auth.signOut();
+  if (error) throw error;
   revalidatePath("/");
   return redirect("/");
 };
