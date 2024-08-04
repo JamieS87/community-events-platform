@@ -28,9 +28,6 @@ export default async function EventPage({
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (error) {
-    throw error;
-  }
 
   return (
     <div className="flex flex-col gap-y-6 mt-6 max-w-4xl w-full p-2">
@@ -68,7 +65,7 @@ export default async function EventPage({
         <div>
           <div className="text-sm font-semibold">
             <div className="text-lg grid grid-cols-10 items-center">
-              <div className="col-span-3 text-center border border-b-0  rounded-md rounded-bl-none rounded-tr-none rounded-br-none px-4 py-2">
+              <div className="col-span-3 text-center border border-b-0 rounded-md rounded-bl-none rounded-tr-none rounded-br-none px-4 py-2">
                 Starts
               </div>
               <div className="col-span-7 text-center border border-l-0 border-b-0 rounded-br-none rounded-tr-none rounded-md rounded-tl-none rounded-bl-none px-4 py-2">
