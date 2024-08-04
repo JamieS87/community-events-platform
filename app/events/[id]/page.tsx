@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { format, parse } from "date-fns";
 import PricingModelBadge from "@/components/pricing-model-badge";
 import PurchasePAYFEventButton from "@/components/purchase-payf-event-button";
+import { isPurchasableEvent } from "@/utils/events/client";
 
 export default async function EventPage({
   params,
@@ -137,10 +138,16 @@ export default async function EventPage({
             </div>
           )}
         </div>
-        {event.pricing_model === "payf" ? (
-          <PurchasePAYFEventButton user={user} event={event} />
-        ) : (
-          <PurchaseEventButton user={user} event={event} />
+        {isPurchasableEvent(event) &&
+          (event.pricing_model === "payf" ? (
+            <PurchasePAYFEventButton user={user} event={event} />
+          ) : (
+            <PurchaseEventButton user={user} event={event} />
+          ))}
+        {!isPurchasableEvent(event) && (
+          <p className="flex items-center justify-center w-full rounded-lg bg-primary text-primary-foreground p-4">
+            This event has ended and is no longer available for purchase
+          </p>
         )}
       </div>
     </div>
