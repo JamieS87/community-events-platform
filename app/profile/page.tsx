@@ -46,12 +46,16 @@ export default async function ProfilePage() {
       <div className="flex items-center justify-center">
         {!googleIdentity && <LinkGoogleAccountButton />}
         {googleIdentity && identityData.identities.length > 1 && (
-          <div className="flex items-center">
+          <div className="flex items-center border rounded-lg p-2 px-4">
             <div className="w-6 h-6 mr-4">
               <GoogleIcon />
             </div>
-            Google account linked
-            {googleIdentity.identity_data?.email}
+            <div className="flex-1 flex flex-col">
+              <p className="text-sm">Google account linked</p>
+              <p className="font-semibold">
+                {googleIdentity.identity_data?.email}
+              </p>
+            </div>
           </div>
         )}
       </div>
