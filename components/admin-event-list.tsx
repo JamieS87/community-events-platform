@@ -22,7 +22,6 @@ import {
   publishEvent,
   unpublishEvent,
 } from "@/app/lib/actions/events";
-import { useRouter } from "next/navigation";
 import {
   DropdownMenu,
   DropdownMenuContent,
