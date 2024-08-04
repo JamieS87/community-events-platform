@@ -119,13 +119,14 @@ export const signOut = async () => {
 };
 
 export const signInWithGoogle = async (return_to: string = "/") => {
+  const origin = headers().get("origin");
   const supabase = createClient();
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
       scopes:
         "https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/userinfo.profile",
-      redirectTo: `http://localhost:3000/auth/callback?flow=google-signin&return_to=${return_to}`,
+      redirectTo: `http://${origin}/auth/callback?flow=google-signin&return_to=${return_to}`,
       queryParams: {
         access_type: "offline",
         prompt: "consent",
@@ -138,6 +139,7 @@ export const signInWithGoogle = async (return_to: string = "/") => {
 };
 
 export const requestCalendarEventsScope = async (return_to: string = "/") => {
+  const origin = headers().get("origin");
   const supabase = createClient();
 
   const { data: userData, error: getUserError } = await supabase.auth.getUser();
@@ -152,7 +154,7 @@ export const requestCalendarEventsScope = async (return_to: string = "/") => {
     provider: "google",
     options: {
       scopes: "https://www.googleapis.com/auth/calendar.events",
-      redirectTo: `http://localhost:3000/auth/callback?flow=google-incremental-auth&return_to=${return_to}`,
+      redirectTo: `http://${origin}/auth/callback?flow=google-incremental-auth&return_to=${return_to}`,
       queryParams: {
         access_type: "offline",
         include_granted_scopes: "true",
@@ -166,6 +168,7 @@ export const requestCalendarEventsScope = async (return_to: string = "/") => {
 };
 
 export const requestLinkGoogleIdentity = async (return_to: string = "/") => {
+  const origin = headers().get("origin");
   const supabase = createClient();
 
   const { error: getUserError } = await supabase.auth.getUser();
@@ -178,7 +181,7 @@ export const requestLinkGoogleIdentity = async (return_to: string = "/") => {
     provider: "google",
     options: {
       scopes: "https://www.googleapis.com/auth/calendar.events",
-      redirectTo: `http://localhost:3000/auth/callback?flow=google-link-account&return_to=${return_to}`,
+      redirectTo: `http://${origin}/auth/callback?flow=google-link-account&return_to=${return_to}`,
       queryParams: {
         prompt: "consent",
         access_type: "offline",
