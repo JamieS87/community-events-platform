@@ -53,7 +53,6 @@ export const CreateEventForm = () => {
   const [thumbnailPreview, setThumbnailPreview] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
 
-  //React-hook-form form
   const form = useForm<z.infer<typeof createEventFormSchema>>({
     mode: "all",
     resolver: zodResolver(createEventFormSchema),
@@ -229,7 +228,7 @@ export const CreateEventForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Pricing Model</FormLabel>
-                  <Select onValueChange={field.onChange}>
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Pricing Model" />
