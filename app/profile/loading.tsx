@@ -8,22 +8,10 @@ export default async function Loading() {
           <p className="w-[240px] h-6 bg-gray-100 animate-pulse"></p>
         </div>
       </div>
-      <div className="flex items-center justify-center">
-        {/* {!googleIdentity && <LinkGoogleAccountButton />}
-        {googleIdentity && identityData.identities.length > 1 && (
-          <div className="flex items-center">
-            <div className="w-6 h-6 mr-4">
-              <GoogleIcon />
-            </div>
-            Google account linked
-            {googleIdentity.identity_data?.email}
-          </div>
-        )} */}
-      </div>
+      <div className="flex items-center justify-center"></div>
       <div className="flex items-center justify-between border-b pb-4">
         <h2 className="w-[300px] h-8 bg-gray-100 animate-pulse"></h2>
       </div>
-      {/* <UserPurchasedEvents /> */}
     </div>
   );
 }
