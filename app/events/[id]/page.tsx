@@ -44,7 +44,7 @@ export default async function EventPage({
       <div className="flex flex-col h-full gap-y-4">
         {event.thumbnail && (
           <Image
-            src={`http://127.0.0.1:54321/storage/v1/object/public/${event.thumbnail}`}
+            src={`${process.env.NEXT_PUBLIC_OBJECT_STORAGE_URL}/${event.thumbnail}`}
             alt="event image preview"
             className="w-full aspect-video object-cover"
             width={1024}
