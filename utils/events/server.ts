@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import { createClient } from "../supabase/server";
 
 export const getLatestEvents = async (limit: number) => {
@@ -6,6 +7,7 @@ export const getLatestEvents = async (limit: number) => {
     .from("events")
     .select("id,name,pricing_model,thumbnail,price,start_date")
     .eq("published", true)
+    .gte("start_date", format(new Date(), "yyyy-MM-dd"))
     .order("created_at", { ascending: false })
     .order("id")
     .limit(limit);
@@ -22,6 +24,7 @@ export const getLatestFreeEvents = async (limit: number) => {
     .from("events")
     .select("id,name,pricing_model,thumbnail,price,start_date")
     .eq("published", true)
+    .gte("start_date", format(new Date(), "yyyy-MM-dd"))
     .eq("pricing_model", "free")
     .order("created_at", { ascending: false })
     .order("id")
@@ -39,6 +42,7 @@ export const getLatestPAYFEvents = async (limit: number) => {
     .from("events")
     .select("id,name,pricing_model,thumbnail,price,start_date")
     .eq("published", true)
+    .gte("start_date", format(new Date(), "yyyy-MM-dd"))
     .eq("pricing_model", "payf")
     .order("created_at", { ascending: false })
     .order("id")
@@ -56,6 +60,7 @@ export const getLatestPaidEvents = async (limit: number) => {
     .from("events")
     .select("id,name,pricing_model,thumbnail,price,start_date")
     .eq("published", true)
+    .gte("start_date", format(new Date(), "yyyy-MM-dd"))
     .eq("pricing_model", "paid")
     .order("created_at", { ascending: false })
     .order("id")
