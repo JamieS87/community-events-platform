@@ -1,5 +1,6 @@
 "use server";
 
+import { isPurchasableEvent } from "@/utils/events/client";
 import {
   createStripeCustomer,
   deleteStripeCustomer,
@@ -27,7 +28,6 @@ const eventSchema = z.object({
 });
 
 export async function purchaseEvent(cancelUrl: string, formData: FormData) {
-
   const supabase = createClient();
 
   const { data, error: getUserError } = await supabase.auth.getUser();
@@ -60,8 +60,10 @@ export async function purchaseEvent(cancelUrl: string, formData: FormData) {
     throw eventError;
   }
 
-  if (!event.published) {
-    throw Error("Cannot purchase an unpublished event");
+  if (!isPurchasableEvent(event)) {
+    throw Error(
+      `Received request to purchase unpurchasable event with id ${event.id}`
+    );
   }
 
   let eventPrice = event.price;
