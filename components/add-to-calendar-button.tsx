@@ -34,9 +34,6 @@ export default function AddToCalendarButton({
   useEffect(() => {
     if (state !== null) {
       switch (state.code) {
-        case "success":
-          router.refresh();
-          break;
         case "google_identity_required":
           setGoogleIdentityRequired(true);
           break;
