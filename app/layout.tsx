@@ -20,7 +20,7 @@ export default function RootLayout({
     <html lang="en">
       <body className="bg-background text-foreground flex flex-col items-center">
         <SiteNav />
-        <main className="w-full min-h-screen flex flex-col items-center">
+        <main className="w-full min-h-screen flex flex-col gap-y-4 items-center">
           {children}
         </main>
         <footer className="w-full border-t border-t-foreground/10 p-8 flex justify-center text-center text-xs">
