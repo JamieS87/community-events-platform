@@ -19,7 +19,9 @@ import { purchaseEvent } from "@/app/lib/actions/checkout";
 import { SubmitButton } from "./submit-button";
 
 const payfSchema = z.object({
-  payf_price: z.coerce.number({ message: "price must be a number" }).optional(),
+  payf_price: z.coerce
+    .number()
+    .min(0.3, { message: "Price must be at least 0.3" }),
   event_id: z.string(),
 });
 
