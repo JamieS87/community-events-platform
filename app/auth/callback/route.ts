@@ -22,7 +22,7 @@ async function handleGoogleSignInFlow(request: Request, code: string) {
       httpOnly: true,
     });
     return NextResponse.redirect(
-      `${origin}${requestUrl.searchParams.get("return_to") ?? "/"}`
+      `${origin}/${requestUrl.searchParams.get("return_to") ?? "/"}`
     );
   }
 }
