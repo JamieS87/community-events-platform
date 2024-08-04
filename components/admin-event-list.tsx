@@ -89,11 +89,16 @@ export function AdminEventList({ initialEvents }: AdminEventListProps) {
     await deleteEvent(event.id);
   }
 
+  function handleCloseDeleteEvent() {
+    setEventToDelete(null);
+  }
+
   return (
     <>
       <DeleteEventDialog
         open={eventToDelete !== null}
         onConfirm={() => handleConfirmDeleteEvents()}
+        onClose={() => handleCloseDeleteEvent()}
       />
       <ul>
         {optimisticEvents.map((event) => {
@@ -250,11 +255,16 @@ const PublishEventDialog = ({ trigger, onConfirm }: EventActionDialogProps) => {
 type DeleteEventDialogProps = {
   open: boolean;
   onConfirm: () => void;
+  onClose: () => void;
 };
 
-const DeleteEventDialog = ({ onConfirm, open }: DeleteEventDialogProps) => {
+const DeleteEventDialog = ({
+  onConfirm,
+  open,
+  onClose,
+}: DeleteEventDialogProps) => {
   return (
-    <AlertDialog open={open}>
+    <AlertDialog open={open} onOpenChange={(open) => !open && onClose()}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Delete Event?</AlertDialogTitle>
