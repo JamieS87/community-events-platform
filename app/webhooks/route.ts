@@ -11,10 +11,10 @@ export async function POST(request: Request) {
   const payload = await request.text();
   const signature = headers().get("stripe-signature") ?? "";
 
-  let event;
+  let whEvent;
 
   try {
-    event = stripe.webhooks.constructEvent(
+    whEvent = stripe.webhooks.constructEvent(
       payload,
       signature,
       stripeWebhookSecret
@@ -28,9 +28,9 @@ export async function POST(request: Request) {
     );
   }
 
-  switch (event.type) {
+  switch (whEvent.type) {
     case "checkout.session.completed":
-      const checkoutSession = event.data.object;
+      const checkoutSession = whEvent.data.object;
       const customerId = checkoutSession.customer;
       let userId: string;
       try {
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
         await insertSupabasePurchasedEvent(
           userId,
           (checkoutSession.metadata as Record<string, any>).event_id,
-          event.id,
+          whEvent.id,
           checkoutSession.id
         );
         return new Response(null, { status: 200 });
