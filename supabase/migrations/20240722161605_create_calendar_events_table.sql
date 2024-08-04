@@ -1,7 +1,7 @@
 create table calendar_events (
   id bigint primary key generated always as identity,
   user_id uuid not null references auth.users (id) on delete cascade,
-  event_id bigint not null references public.events (id),
+  event_id bigint not null,
   calendar_event_id text not null,
   unique (user_id, event_id)
 );
