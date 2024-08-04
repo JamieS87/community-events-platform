@@ -46,10 +46,12 @@ export async function createEvent(
 export async function deleteEvent(eventId: Tables<"events">["id"]) {
   const supabase = createClient();
   const { error } = await supabase.from("events").delete().eq("id", eventId);
+
   if (error) {
     throw error;
   }
-  revalidatePath("");
+
+  revalidatePath("/");
 }
 
 export async function publishEvent(eventId: Tables<"events">["id"]) {
@@ -63,7 +65,8 @@ export async function publishEvent(eventId: Tables<"events">["id"]) {
   if (error) {
     throw error;
   }
-  revalidatePath("");
+
+  revalidatePath("/");
 }
 
 export async function unpublishEvent(eventId: Tables<"events">["id"]) {
@@ -77,5 +80,6 @@ export async function unpublishEvent(eventId: Tables<"events">["id"]) {
   if (error) {
     throw error;
   }
-  revalidatePath("");
+
+  revalidatePath("/");
 }
