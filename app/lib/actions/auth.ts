@@ -126,7 +126,7 @@ export const signInWithGoogle = async (return_to: string = "/") => {
     options: {
       scopes:
         "https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/userinfo.profile",
-      redirectTo: `https://${origin}/auth/callback?flow=google-signin&return_to=${return_to}`,
+      redirectTo: `${origin}/auth/callback?flow=google-signin&return_to=${return_to}`,
       queryParams: {
         access_type: "offline",
         prompt: "consent",
@@ -154,7 +154,7 @@ export const requestCalendarEventsScope = async (return_to: string = "/") => {
     provider: "google",
     options: {
       scopes: "https://www.googleapis.com/auth/calendar.events",
-      redirectTo: `https://${origin}/auth/callback?flow=google-incremental-auth&return_to=${return_to}`,
+      redirectTo: `${origin}/auth/callback?flow=google-incremental-auth&return_to=${return_to}`,
       queryParams: {
         access_type: "offline",
         include_granted_scopes: "true",
@@ -181,7 +181,7 @@ export const requestLinkGoogleIdentity = async (return_to: string = "/") => {
     provider: "google",
     options: {
       scopes: "https://www.googleapis.com/auth/calendar.events",
-      redirectTo: `https://${origin}/auth/callback?flow=google-link-account&return_to=${return_to}`,
+      redirectTo: `${origin}/auth/callback?flow=google-link-account&return_to=${return_to}`,
       queryParams: {
         prompt: "consent",
         access_type: "offline",
