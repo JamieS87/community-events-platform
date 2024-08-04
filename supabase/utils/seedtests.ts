@@ -17,6 +17,7 @@ export const createUser = async (
     email_confirm,
   });
   if (error) throw error;
+  if (!user) throw Error("Got null for user in createUser");
   return user;
 };
 
@@ -26,6 +27,9 @@ export const createStaffUser = async (
   email_confirm: boolean
 ) => {
   const user = await createUser(email, password, email_confirm);
+  if (!user) {
+    throw Error("createUser returned null");
+  }
   const { error } = await serviceClient
     .from("profiles")
     .update({ is_staff: true })
@@ -137,11 +141,15 @@ export const seed = async () => {
   const users = [];
 
   const basicUser = await createUser("testuser@test", "testuser@test", true);
-  const staffUser = await createStaffUser("teststaffuser@test", "teststaffuser@test", true);
+  const staffUser = await createStaffUser(
+    "teststaffuser@test",
+    "teststaffuser@test",
+    true
+  );
   users.push(basicUser, staffUser);
 
   createdData.users = [...users];
   createdData.events = await createTestEvents();
-  
+
   return createdData;
 };

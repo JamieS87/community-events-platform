@@ -17,7 +17,11 @@ export default async function ProfilePage() {
     supabase.auth.getUserIdentities(),
   ]);
 
-  if (userError || identityError) {
+  if (userError || !userData.user) {
+    return redirect("/login");
+  }
+
+  if (identityError || !identityData) {
     return redirect("/login");
   }
 

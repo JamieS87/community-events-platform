@@ -29,7 +29,8 @@ export default async function UserPurchasedEvents() {
     throw calendarEventsError;
   }
 
-  const hasPurchasedEvents = purchasedEvents.length > 0;
+  const hasPurchasedEvents =
+    purchasedEvents !== null && purchasedEvents.length > 0;
 
   return (
     <div data-testid="purchased-events">

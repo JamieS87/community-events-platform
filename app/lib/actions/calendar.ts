@@ -7,6 +7,7 @@ import { insertSupabaseCalendarEvent } from "@/utils/supabase/admin";
 import { cookies } from "next/headers";
 import { getGoogleRefreshToken } from "@/utils/google/server";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 export async function addEventToCalendar(
   eventId: Tables<"events">["id"],
@@ -31,6 +32,16 @@ export async function addEventToCalendar(
 
   if (userError || eventError) {
     throw userError || eventError;
+  }
+
+  if (!event) {
+    throw Error(
+      `Couldn't add purchased event with event_id ${eventId} to calendar because the server returned null`
+    );
+  }
+
+  if (!userData.user) {
+    return redirect("/login");
   }
 
   const { user } = userData;
