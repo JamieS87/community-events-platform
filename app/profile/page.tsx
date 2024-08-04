@@ -1,6 +1,5 @@
 import GoogleIcon from "@/components/google-icon";
 import LinkGoogleAccountButton from "@/components/link-google-account-button";
-// import SyncCalendarButton from "@/components/sync-calendar-button";
 import UserAvatar from "@/components/user-avatar";
 import UserPurchasedEvents from "@/components/user-purchased-events";
 import { createClient } from "@/utils/supabase/server";
