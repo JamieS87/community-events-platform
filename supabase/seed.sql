@@ -38,3 +38,6 @@ VALUES ('CoffeeFest', 'Coffee lovers unite', '01-08-2030', '01-08-2030', '10:00'
        ('StarbucksStock', 'Starbucks coffee lovers unite', '01-08-2030', '02-08-2030', '11:00', '21:00', true, 'paid', 100),
        ('Costapocalypse', 'World ending coffee event', '02-08-2030', '04-08-2030', '11:00', '21:00', false, 'paid', 100),
       ('Beananza', 'It''s a bonanza of coffee', '02-08-2030', '04-08-2030', '11:00', '21:00', true, 'payf', 200);
+
+INSERT INTO events (name, description, start_date, end_date, start_time, end_time, published, pricing_model, price, created_at)      
+VALUES ('Expired Event', 'This event occured in the past', '01-01-1999', '01-01-1999', '11:00', '21:00', true, 'payf', 200, '01-01-1999 21:00:00');
