@@ -35,7 +35,21 @@ export async function GET(request: Request) {
   const flow = requestUrl.searchParams.get("flow");
 
   //Redirect to error page if code is missing
-  if (!code) return NextResponse.redirect(`${origin}/auth-code-error`);
+  if (!code) {
+    if (flow === "google-link-account") {
+      if (
+        requestUrl.searchParams.get("error_description") ===
+        "Identity is already linked to another user"
+      ) {
+        return NextResponse.redirect(
+          `${origin}/auth-error?type=google-identity-already-linked&return_to=${
+            requestUrl.searchParams.get("return_to") ?? "/"
+          }`
+        );
+      }
+    }
+    return NextResponse.redirect(`${origin}/auth-error`);
+  }
 
   const allowedFlows = [
     "google-signin",
