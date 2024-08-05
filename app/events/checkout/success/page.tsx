@@ -5,6 +5,8 @@ import { CheckCircle } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import Stripe from "stripe";
+import Image from "next/image";
+import { format, parse } from "date-fns";
 export default async function SuccessPage({
   searchParams,
 }: {
@@ -28,8 +30,14 @@ export default async function SuccessPage({
     .limit(1)
     .single();
 
+  if (getEventError || !event) {
+    throw Error(
+      "Couldn't get supabase event from completed checkout session event id"
+    );
+  }
+
   return (
-    <Card className="max-w-2xl w-full">
+    <Card className="max-w-2xl w-full mt-10">
       <CardHeader>
         <CardTitle className="flex items-center justify-center">
           Purchase Complete
@@ -44,14 +52,32 @@ export default async function SuccessPage({
           </span>
         </p>
         <div className="flex flex-col space-y-2">
-          <p className="font-semibold text-xl">Purchase Details</p>
-          <p className="font-semibold">{event?.name}</p>
-          <p>{event?.description}</p>
-          <p>
+          <p className="font-semibold text-xl border-b pb-4">
+            Purchase Details
+          </p>
+          <p className="font-semibold">{event.name}</p>
+          <Image
+            src={`${process.env.NEXT_PUBLIC_OBJECT_STORAGE_URL}/${event.thumbnail}`}
+            width={1024}
+            height={1024}
+            className="max-w-sm aspect-video"
+            alt={`${event.name} thumbnail image`}
+          />
+          <p className="font-semibold">
             Paid:{" "}
-            {checkoutSession.amount_total !== null &&
-              checkoutSession.amount_total / 100}{" "}
-            {checkoutSession.currency}
+            <span className="font-normal">
+              {checkoutSession.amount_total !== null &&
+                checkoutSession.amount_total / 100}{" "}
+              {checkoutSession.currency?.toUpperCase()}
+            </span>
+          </p>
+          <p className="font-semibold">
+            Starts{" "}
+            {format(parse(event.start_date, "yyyy-MM-dd", Date.now()), "PPP")}
+          </p>
+          <p className="font-semibold">
+            Ends{" "}
+            {format(parse(event.end_date, "yyyy-MM-dd", Date.now()), "PPP")}
           </p>
         </div>
         <p className="mx-auto flex flex-col items-center">
