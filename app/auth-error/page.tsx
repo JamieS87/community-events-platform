@@ -23,7 +23,7 @@ export default async function AuthErrorPage({
           Google account already linked
         </h2>
         <p>
-          The requested Google account is already linked to another account.
+          The requested Google account is already linked to a different account.
         </p>
         <Button variant="link" asChild className="mx-auto">
           <Link href={searchParams.return_to ?? "/"}>Back</Link>
