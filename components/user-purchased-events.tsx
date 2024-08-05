@@ -1,14 +1,14 @@
 "use server";
 
-import { Tables } from "@/dbtypes";
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import AddToCalendarButton from "./add-to-calendar-button";
 import { redirect } from "next/navigation";
+import { format } from "date-fns";
 
 export default async function UserPurchasedEvents() {
   const supabase = createClient();
-  const { data, error } = await supabase.auth.getUser();
+  const { error } = await supabase.auth.getUser();
 
   if (error) {
     return redirect("/login");
@@ -20,7 +20,9 @@ export default async function UserPurchasedEvents() {
   ] = await Promise.all([
     supabase
       .from("purchased_events")
-      .select("id,event_id,event:events(id,name)"),
+      .select("id,event_id,name,amount_total,purchased_at")
+      .order("purchased_at", { ascending: false })
+      .order("id", { ascending: false }),
     supabase.from("calendar_events").select("*"),
   ]);
 
@@ -32,7 +34,8 @@ export default async function UserPurchasedEvents() {
     throw calendarEventsError;
   }
 
-  const hasPurchasedEvents = purchasedEvents.length > 0;
+  const hasPurchasedEvents =
+    purchasedEvents !== null && purchasedEvents.length > 0;
 
   return (
     <div data-testid="purchased-events">
@@ -45,28 +48,49 @@ export default async function UserPurchasedEvents() {
         </div>
       ) : (
         <ul>
-          {purchasedEvents.map(({ id, event_id, event }) => {
-            return (
-              <li
-                key={id}
-                className="border-t py-4 grid grid-cols-4 items-center"
-              >
-                <Link href={`/events/${event_id}`}>
-                  {(event as Tables<"events">).name}
-                </Link>
-                <div className="col-start-4 ml-auto">
-                  <AddToCalendarButton
-                    event_id={event_id}
-                    isInCalendar={Boolean(
-                      calendarEvents?.find(
-                        (calendarEvent) => calendarEvent.event_id === event_id
-                      )
-                    )}
-                  />
-                </div>
-              </li>
-            );
-          })}
+          <li className="hidden md:grid md:grid-cols-4">
+            <span className="text-sm font-semibold text-center">Name</span>
+            <span className="text-sm font-semibold text-center">
+              Amount Total
+            </span>
+            <span className="text-sm font-semibold text-center">Purchased</span>
+            <span className="text-sm font-semibold text-center">--</span>
+          </li>
+          {purchasedEvents.map(
+            ({ id, event_id, name, amount_total, purchased_at }) => {
+              return (
+                <li
+                  key={id}
+                  className="border-t py-4 grid grid-cols-4 items-center text-sm text-left md:text-center gap-y-2 md:gap-y-0"
+                >
+                  <Link
+                    className="col-span-4 md:col-span-1"
+                    href={`/events/${event_id}`}
+                  >
+                    {name}
+                  </Link>
+                  <p className="col-span-4 md:col-span-1">
+                    <span className="font-semibold md:hidden">Paid </span>
+                    {amount_total !== null ? `£${amount_total / 100}` : "N/A"}
+                  </p>
+                  <p className="col-span-4 md:col-span-1">
+                    <span className="font-semibold md:hidden">Purchased </span>
+                    {purchased_at && format(purchased_at, "PPP")}
+                  </p>
+                  <div className="col-span-4 md:col-span-1 md:col-start-4 md:ml-auto mt-2 md:mt-auto">
+                    <AddToCalendarButton
+                      event_id={event_id}
+                      isInCalendar={
+                        calendarEvents?.find(
+                          (calendarEvent) => calendarEvent.event_id === event_id
+                        ) !== undefined
+                      }
+                    />
+                  </div>
+                </li>
+              );
+            }
+          )}
         </ul>
       )}
     </div>

@@ -1,5 +1,6 @@
 import { Database, Tables } from "@/dbtypes";
 import { createClient, User } from "@supabase/supabase-js";
+import { format } from "date-fns";
 import Stripe from "stripe";
 
 const supabaseAdmin = createClient<Database>(
@@ -61,13 +62,41 @@ export const updateSupabaseCustomer = async (
 
 export const insertSupabasePurchasedEvent = async (
   user_id: User["id"],
-  event_id: string,
+  event_id: Tables<"events">["id"],
   wh_event_id: string,
-  cs_id: string
+  cs_id: string,
+  amount_total: number | null,
+  purchased_at: number
 ) => {
-  const { data: purchasedEvent, error } = await supabaseAdmin
-    .from("purchased_events")
-    .insert({ user_id, event_id: Number(event_id), wh_event_id, cs_id });
+  const { data: eventData, error: getEventError } = await supabaseAdmin
+    .from("events")
+    .select("*")
+    .eq("id", event_id)
+    .single();
+
+  if (getEventError) {
+    throw getEventError;
+  }
+
+  const event = eventData;
+
+  const { error } = await supabaseAdmin.from("purchased_events").insert({
+    user_id,
+    event_id: Number(event.id),
+    name: event.name,
+    description: event.description,
+    start_date: event.start_date,
+    end_date: event.end_date,
+    start_time: event.start_time,
+    end_time: event.end_time,
+    pricing_model: event.pricing_model,
+    price: event.price,
+    thumbnail: event.thumbnail,
+    wh_event_id,
+    cs_id,
+    amount_total,
+    purchased_at: format(new Date(purchased_at * 1000), "MM-dd-yyyy hh:mm:ss"),
+  });
   if (error) {
     throw error;
   }
@@ -85,43 +114,3 @@ export const insertSupabaseCalendarEvent = async (
     throw error;
   }
 };
-
-// export const supabaseDeleteUserCalendarEvents = async (
-//   user_id: User["id"],
-//   calendarEventIds: string[]
-// ) => {
-//   const { error } = await supabaseAdmin
-//     .from("calendar_events")
-//     .delete()
-//     .eq("user_id", user_id)
-//     .in("calendar_event_id", calendarEventIds);
-//   if (error) {
-//     throw error;
-//   }
-// };
-
-// export const setUserGoogleTokens = async (
-//   user: User,
-//   access_token: string,
-//   refresh_token: string
-// ) => {
-//   const {
-//     data: { user: updatedUser },
-//     error,
-//   } = await supabaseAdmin.auth.admin.updateUserById(user.id, {
-//     app_metadata: {
-//       google_access_token: access_token,
-//       google_refresh_token: refresh_token,
-//     },
-//   });
-//   if (error) {
-//     throw error;
-//   }
-//   return updatedUser;
-// };
-
-// export const getUserGoogleTokens = async (user: User) => {
-//   const access_token = user.app_metadata.google_access_token;
-//   const refresh_token = user.app_metadata.google_refresh_token;
-//   return { access_token, refresh_token };
-// };

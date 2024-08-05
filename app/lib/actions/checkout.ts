@@ -1,5 +1,6 @@
 "use server";
 
+import { isPurchasableEvent } from "@/utils/events/client";
 import {
   createStripeCustomer,
   deleteStripeCustomer,
@@ -18,24 +19,34 @@ import { z } from "zod";
 
 const eventSchema = z.object({
   event_id: z.coerce.number().min(0),
-  payf_price: z.coerce.number().positive().min(0.3).transform((v) => v * 100).optional()
+  payf_price: z.coerce
+    .number()
+    .positive()
+    .min(0.3)
+    .transform((v) => v * 100)
+    .optional(),
 });
 
 export async function purchaseEvent(cancelUrl: string, formData: FormData) {
-  const eventValidationResult = eventSchema.safeParse(
-    { 
-      event_id: formData.get('event_id'),
-      payf_price: formData.get('payf_price') || undefined
-    }
-  );
+  const supabase = createClient();
 
-  if(!eventValidationResult.success) {
-    return redirect("/checkout-error");
+  const { data, error: getUserError } = await supabase.auth.getUser();
+  if (getUserError) {
+    return redirect("/login");
+  }
+
+  const user = data.user;
+
+  const eventValidationResult = eventSchema.safeParse({
+    event_id: formData.get("event_id"),
+    payf_price: formData.get("payf_price") || undefined,
+  });
+
+  if (!eventValidationResult.success) {
+    throw Error("Form data validation failed");
   }
 
   const validatedEventId = eventValidationResult.data.event_id;
-
-  const supabase = createClient();
 
   //Get the event
   const { data: event, error: eventError } = await supabase
@@ -45,45 +56,36 @@ export async function purchaseEvent(cancelUrl: string, formData: FormData) {
     .limit(1)
     .single();
 
-  if(eventError || event === null) {
-    if(eventError) {
-      throw eventError;
-    }
-    if(!event) {
-      throw Error("Expected event to not be null")
-    }
+  if (eventError) {
+    throw eventError;
   }
 
-
-  if (!event.published) {
-    return redirect("/checkout-error");
+  if (!isPurchasableEvent(event)) {
+    throw Error(
+      `Received request to purchase unpurchasable event with id ${event.id}`
+    );
   }
 
   let eventPrice = event.price;
 
-  if(event.pricing_model === 'payf') {
-    if(eventValidationResult.data.payf_price === undefined) {
-      throw Error("Encountered attempt to purchase pay as you feel event without providing a payf_price");
+  if (event.pricing_model === "payf") {
+    if (eventValidationResult.data.payf_price === undefined) {
+      throw Error(
+        "Encountered attempt to purchase pay as you feel event without providing a payf_price"
+      );
     } else {
       eventPrice = eventValidationResult.data.payf_price;
     }
-  }
-
-  const {
-    data: { user }, error: getUserError
-  } = await supabase.auth.getUser();
-  if (!user || getUserError) {
-    return redirect("checkout-error");
   }
 
   //Get the customer record for the user from supabase
   let customerId = await selectSupabaseCustomerIdByUserId(user.id);
   let isNewCustomer = false;
 
-  if(customerId) {
+  if (customerId) {
     //We have a customer on the supabase side, so check that the customer exists on the stripe side
     const stripeCustomer = await getStripeCustomerByCustomerId(customerId);
-    if(stripeCustomer === null || stripeCustomer.deleted) {
+    if (stripeCustomer === null || stripeCustomer.deleted) {
       //The customer doesn't exist, or has been deleted on the stripe side
       //So create a new customer and update the customer on the supabase side
       const newCustomer = await createStripeCustomer(user);
@@ -91,7 +93,7 @@ export async function purchaseEvent(cancelUrl: string, formData: FormData) {
         await updateSupabaseCustomer(user.id, newCustomer.id);
         customerId = newCustomer.id;
         isNewCustomer = true;
-      } catch(error) {
+      } catch (error) {
         //If we can't create the customer on the supabase side, clean up
         //by deleting the customer on the stripe side
         //then rethrow the error
@@ -110,13 +112,13 @@ export async function purchaseEvent(cancelUrl: string, formData: FormData) {
       //Create the customer in supabase
       await insertSupabaseCustomer(user.id, customerId);
     } catch (error) {
-      //If we fail to create a supabase customer, clan up by deleting the stripe customer
+      //If we fail to create a supabase customer, clean up by deleting the stripe customer
       await deleteStripeCustomer(customerId);
       throw error;
     }
   }
 
-  const { origin } = new URL(headers().get('origin') || '');
+  const { origin } = new URL(headers().get("origin") || "");
 
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!!);
 
@@ -126,7 +128,7 @@ export async function purchaseEvent(cancelUrl: string, formData: FormData) {
       currency: "GBP",
       unit_amount: eventPrice,
       product_data: {
-        name: event.name ?? '',
+        name: event.name ?? "",
         description: event.description,
         metadata: { event_id: event.id },
       },
@@ -145,7 +147,7 @@ export async function purchaseEvent(cancelUrl: string, formData: FormData) {
   });
 
   if (!session.url) {
-    return redirect(`${origin}/checkout-error`);
+    throw Error("Stripe returned checkout session with null url property");
   }
   return redirect(session.url);
 }

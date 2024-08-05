@@ -2,9 +2,22 @@
 import { loginFormSchema } from "@/components/forms/login-form-schema";
 import { signUpFormSchema } from "@/components/forms/signup-form-schema";
 import { createClient } from "@/utils/supabase/server";
+import { revalidatePath } from "next/cache";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
+
+const getURL = () => {
+  let url =
+    process?.env?.NEXT_PUBLIC_SITE_URL ?? // Set this to your site URL in production env.
+    process?.env?.NEXT_PUBLIC_VERCEL_URL ?? // Automatically set by Vercel.
+    "http://localhost:3000/";
+  // Make sure to include `https://` when not localhost.
+  url = url.startsWith("http") ? url : `https://${url}`;
+  // Make sure to include a trailing `/`.
+  url = url.endsWith("/") ? url : `${url}/`;
+  return url;
+};
 
 type FlattenedZodLoginErrors = z.inferFlattenedErrors<
   typeof loginFormSchema,
@@ -93,7 +106,7 @@ export const signUp = async (prev: SignUpState, formData: FormData) => {
         first_name: result.data.firstname,
         last_name: result.data.lastname,
       },
-      emailRedirectTo: `${origin}/auth/callback`,
+      emailRedirectTo: `${getURL()}auth/email-confirmed`,
     },
   });
 
@@ -112,17 +125,20 @@ export const signOut = async () => {
   cookies().delete("g_access_token");
   cookies().delete("g_refresh_token");
   const { error } = await supabase.auth.signOut();
+  if (error) throw error;
+  revalidatePath("/");
   return redirect("/");
 };
 
 export const signInWithGoogle = async (return_to: string = "/") => {
+  const origin = headers().get("origin");
   const supabase = createClient();
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
       scopes:
         "https://www.googleapis.com/auth/userinfo.email,https://www.googleapis.com/auth/userinfo.profile",
-      redirectTo: `http://localhost:3000/auth/callback?flow=google-signin&return_to=${return_to}`,
+      redirectTo: `${getURL()}auth/callback?flow=google-signin&return_to=${return_to}`,
       queryParams: {
         access_type: "offline",
         prompt: "consent",
@@ -135,6 +151,7 @@ export const signInWithGoogle = async (return_to: string = "/") => {
 };
 
 export const requestCalendarEventsScope = async (return_to: string = "/") => {
+  const origin = headers().get("origin");
   const supabase = createClient();
 
   const { data: userData, error: getUserError } = await supabase.auth.getUser();
@@ -149,7 +166,7 @@ export const requestCalendarEventsScope = async (return_to: string = "/") => {
     provider: "google",
     options: {
       scopes: "https://www.googleapis.com/auth/calendar.events",
-      redirectTo: `http://localhost:3000/auth/callback?flow=google-incremental-auth&return_to=${return_to}`,
+      redirectTo: `${getURL()}auth/callback?flow=google-incremental-auth&return_to=${return_to}`,
       queryParams: {
         access_type: "offline",
         include_granted_scopes: "true",
@@ -163,6 +180,7 @@ export const requestCalendarEventsScope = async (return_to: string = "/") => {
 };
 
 export const requestLinkGoogleIdentity = async (return_to: string = "/") => {
+  const origin = headers().get("origin");
   const supabase = createClient();
 
   const { error: getUserError } = await supabase.auth.getUser();
@@ -175,7 +193,7 @@ export const requestLinkGoogleIdentity = async (return_to: string = "/") => {
     provider: "google",
     options: {
       scopes: "https://www.googleapis.com/auth/calendar.events",
-      redirectTo: `http://localhost:3000/auth/callback?flow=google-link-account&return_to=${return_to}`,
+      redirectTo: `${getURL()}auth/callback?flow=google-link-account&return_to=${return_to}`,
       queryParams: {
         prompt: "consent",
         access_type: "offline",

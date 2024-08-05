@@ -46,14 +46,15 @@ import {
 import Image from "next/image";
 import { CreateEventSubmitButton } from "../create-event-submit-button";
 import { uploadEventThumbnail } from "@/utils/events/client";
+import { useToast } from "../ui/use-toast";
 export const CreateEventForm = () => {
+  const { toast } = useToast();
   const router = useRouter();
   const [state, createEventAction] = useFormState(createEvent, null);
   const [open, setOpen] = useState(false);
   const [thumbnailPreview, setThumbnailPreview] = useState<File | null>(null);
   const [saving, setSaving] = useState(false);
 
-  //React-hook-form form
   const form = useForm<z.infer<typeof createEventFormSchema>>({
     mode: "all",
     resolver: zodResolver(createEventFormSchema),
@@ -69,6 +70,15 @@ export const CreateEventForm = () => {
       thumbnail: "",
     },
   });
+
+  useEffect(() => {
+    if (state?.code === "success") {
+      toast({
+        title: "Event created",
+        description: "Successfully created event",
+      });
+    }
+  }, [state, toast]);
 
   useEffect(() => {
     const formWatcher = form.watch((values, { type, name }) => {
@@ -229,7 +239,7 @@ export const CreateEventForm = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Pricing Model</FormLabel>
-                  <Select onValueChange={field.onChange}>
+                  <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue placeholder="Pricing Model" />

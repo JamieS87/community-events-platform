@@ -1,7 +1,8 @@
 insert into storage.buckets
   (id, name, public, allowed_mime_types)
 values
-  ('event-thumbnails', 'event-thumbnails', true, '{"image/png", "image/jpeg", "image/jfif", "image/webp"}');
+  ('event-thumbnails', 'event-thumbnails', true, '{"image/png", "image/jpeg", "image/jfif", "image/webp"}')
+on conflict (id) do nothing;
 
 create policy "Staff can upload event thumbnails"
 on storage.objects

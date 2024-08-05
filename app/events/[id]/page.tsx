@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { format, parse } from "date-fns";
 import PricingModelBadge from "@/components/pricing-model-badge";
 import PurchasePAYFEventButton from "@/components/purchase-payf-event-button";
+import { isPurchasableEvent } from "@/utils/events/client";
 
 export default async function EventPage({
   params,
@@ -28,9 +29,6 @@ export default async function EventPage({
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (error) {
-    throw error;
-  }
 
   return (
     <div className="flex flex-col gap-y-6 mt-6 max-w-4xl w-full p-2">
@@ -46,7 +44,7 @@ export default async function EventPage({
       <div className="flex flex-col h-full gap-y-4">
         {event.thumbnail && (
           <Image
-            src={`http://127.0.0.1:54321/storage/v1/object/public/${event.thumbnail}`}
+            src={`${process.env.NEXT_PUBLIC_OBJECT_STORAGE_URL}/${event.thumbnail}`}
             alt="event image preview"
             className="w-full aspect-video object-cover"
             width={1024}
@@ -68,7 +66,7 @@ export default async function EventPage({
         <div>
           <div className="text-sm font-semibold">
             <div className="text-lg grid grid-cols-10 items-center">
-              <div className="col-span-3 text-center border border-b-0  rounded-md rounded-bl-none rounded-tr-none rounded-br-none px-4 py-2">
+              <div className="col-span-3 text-center border border-b-0 rounded-md rounded-bl-none rounded-tr-none rounded-br-none px-4 py-2">
                 Starts
               </div>
               <div className="col-span-7 text-center border border-l-0 border-b-0 rounded-br-none rounded-tr-none rounded-md rounded-tl-none rounded-bl-none px-4 py-2">
@@ -140,10 +138,16 @@ export default async function EventPage({
             </div>
           )}
         </div>
-        {event.pricing_model === "payf" ? (
-          <PurchasePAYFEventButton user={user} event={event} />
-        ) : (
-          <PurchaseEventButton user={user} event={event} />
+        {isPurchasableEvent(event) &&
+          (event.pricing_model === "payf" ? (
+            <PurchasePAYFEventButton user={user} event={event} />
+          ) : (
+            <PurchaseEventButton user={user} event={event} />
+          ))}
+        {!isPurchasableEvent(event) && (
+          <p className="flex items-center justify-center w-full rounded-lg bg-primary text-primary-foreground p-4">
+            This event has ended and is no longer available for purchase
+          </p>
         )}
       </div>
     </div>

@@ -1,6 +1,5 @@
 import GoogleIcon from "@/components/google-icon";
 import LinkGoogleAccountButton from "@/components/link-google-account-button";
-// import SyncCalendarButton from "@/components/sync-calendar-button";
 import UserAvatar from "@/components/user-avatar";
 import UserPurchasedEvents from "@/components/user-purchased-events";
 import { createClient } from "@/utils/supabase/server";
@@ -18,7 +17,11 @@ export default async function ProfilePage() {
     supabase.auth.getUserIdentities(),
   ]);
 
-  if (userError || identityError) {
+  if (userError || !userData.user) {
+    return redirect("/login");
+  }
+
+  if (identityError || !identityData) {
     return redirect("/login");
   }
 
@@ -47,12 +50,16 @@ export default async function ProfilePage() {
       <div className="flex items-center justify-center">
         {!googleIdentity && <LinkGoogleAccountButton />}
         {googleIdentity && identityData.identities.length > 1 && (
-          <div className="flex items-center">
+          <div className="flex items-center border rounded-lg p-2 px-4">
             <div className="w-6 h-6 mr-4">
               <GoogleIcon />
             </div>
-            Google account linked
-            {googleIdentity.identity_data?.email}
+            <div className="flex-1 flex flex-col">
+              <p className="text-sm">Google account linked</p>
+              <p className="font-semibold">
+                {googleIdentity.identity_data?.email}
+              </p>
+            </div>
           </div>
         )}
       </div>

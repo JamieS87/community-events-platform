@@ -1,4 +1,5 @@
-import { createClient } from "@/utils/supabase/server";
+"use client";
+
 import { Button } from "./ui/button";
 import Link from "next/link";
 
@@ -9,43 +10,43 @@ import {
 } from "@radix-ui/react-dropdown-menu";
 import UserAvatar from "./user-avatar";
 import { DropdownMenuContent } from "./ui/dropdown-menu";
-import { hasStaffClaim } from "@/app/lib/utils";
-import { User } from "lucide-react";
-import SignOutButton from "./sign-out-button";
+import { Gavel, LogOut, UserIcon } from "lucide-react";
+import { Session, User } from "@supabase/supabase-js";
+import { signOut } from "@/app/lib/actions/auth";
 
-export default async function SiteAuth() {
-  const supabase = createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  const {
-    data: { session },
-    error,
-  } = await supabase.auth.getSession();
-
-  const isStaff = session && hasStaffClaim(session);
-
+type SiteAuthProps = {
+  user: User | null;
+  isStaff: boolean;
+};
+export default function SiteAuth({ user, isStaff }: SiteAuthProps) {
   return user ? (
     <DropdownMenu>
       <DropdownMenuTrigger>
         <UserAvatar user={user} />
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
+      <DropdownMenuContent align="end" sideOffset={12}>
         {isStaff && (
-          <DropdownMenuItem asChild>
-            <Link href="/admin">Admin Dashboard</Link>
+          <DropdownMenuItem className="py-2" asChild>
+            <Link href="/admin" className="flex items-center w-full">
+              <Gavel className="w-6 h-6 mr-4" />
+              <span className="text-lg">Admin</span>
+            </Link>
           </DropdownMenuItem>
         )}
-        <DropdownMenuItem asChild>
-          <Link href="/profile" className="flex items-center">
-            <User className="w-4 h-4 mr-2" />
-            Profile
+        <DropdownMenuItem className="py-2" asChild>
+          <Link href="/profile" className="flex items-center w-full">
+            <UserIcon className="w-6 h-6 mr-4" />
+            <span className="text-lg">Profile</span>
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem className="flex">
-          <SignOutButton />
+        <DropdownMenuItem
+          className="py-2"
+          onClick={async () => await signOut()}
+        >
+          <div className="flex items-center">
+            <LogOut className="w-6 h-6 mr-4" />
+            <span className="text-lg">Sign out</span>
+          </div>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
