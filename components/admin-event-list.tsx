@@ -28,6 +28,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import { useToast } from "./ui/use-toast";
 
 type AdminEventListProps = {
   initialEvents: Tables<"events">[];
@@ -41,6 +42,7 @@ type OptimisticEvent = {
 } & Tables<"events">;
 
 export function AdminEventList({ initialEvents }: AdminEventListProps) {
+  const { toast } = useToast();
   const [eventToDelete, setEventToDelete] = useState<OptimisticEvent | null>(
     null
   );
@@ -86,7 +88,19 @@ export function AdminEventList({ initialEvents }: AdminEventListProps) {
     const event = eventToDelete;
     setEventToDelete(null);
     startTransition(() => addOptimisticEvent({ ...event, deleting: true }));
-    await deleteEvent(event.id);
+    const result = await deleteEvent(event.id);
+    if (result.code === "error") {
+      toast({
+        title: "Delete Event Failed",
+        description: result.message,
+        variant: "destructive",
+      });
+    } else if (result.code === "success") {
+      toast({
+        title: "Event Deleted",
+        description: result.message,
+      });
+    }
   }
 
   function handleCloseDeleteEvent() {
