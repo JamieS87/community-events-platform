@@ -46,7 +46,9 @@ import {
 import Image from "next/image";
 import { CreateEventSubmitButton } from "../create-event-submit-button";
 import { uploadEventThumbnail } from "@/utils/events/client";
+import { useToast } from "../ui/use-toast";
 export const CreateEventForm = () => {
+  const { toast } = useToast();
   const router = useRouter();
   const [state, createEventAction] = useFormState(createEvent, null);
   const [open, setOpen] = useState(false);
@@ -68,6 +70,15 @@ export const CreateEventForm = () => {
       thumbnail: "",
     },
   });
+
+  useEffect(() => {
+    if (state?.code === "success") {
+      toast({
+        title: "Event created",
+        description: "Successfully created event",
+      });
+    }
+  }, [state, toast]);
 
   useEffect(() => {
     const formWatcher = form.watch((values, { type, name }) => {
