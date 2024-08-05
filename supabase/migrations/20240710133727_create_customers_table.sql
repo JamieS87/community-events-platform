@@ -1,5 +1,5 @@
 create table customers (
-  user_id uuid primary key references auth.users (id),
+  user_id uuid primary key references auth.users (id) on delete cascade,
   customer_id text not null
 );
 
