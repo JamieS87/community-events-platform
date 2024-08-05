@@ -48,10 +48,10 @@ export async function deleteEvent(eventId: Tables<"events">["id"]) {
   const { error } = await supabase.from("events").delete().eq("id", eventId);
 
   if (error) {
-    throw error;
+    return { code: "error", message: "Unable to delete event" };
   }
-
   revalidatePath("/");
+  return { code: "success", message: "Event deleted successfully" };
 }
 
 export async function publishEvent(eventId: Tables<"events">["id"]) {
