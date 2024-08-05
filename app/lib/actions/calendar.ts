@@ -78,7 +78,7 @@ export async function addEventToCalendar(
     if (result.status === 200) {
       await insertSupabaseCalendarEvent(
         user.id,
-        event.id,
+        event.event_id,
         <string>insertedEvent.id
       );
       revalidatePath("/");
