@@ -73,6 +73,11 @@ export default function AddToCalendarButton({
         onOpenChange={(open) => !open && setGoogleIdentityRequired(false)}
         onConfirm={() => requestLinkGoogleIdentity(pathname)}
       />
+      <GoogleScopesPromptDialog
+        open={scopesRequired}
+        onOpenChange={(open) => !open && setScopesRequired(false)}
+        onConfirm={() => requestCalendarEventsScope(pathname)}
+      />
       {scopesRequired && (
         <p>
           Additional scopes required{" "}
@@ -126,6 +131,44 @@ const GoogleAccountPromptDialog = ({
             A Google account is required to add events to your calendar. Click
             continue to Link a Google account and add events to your Google
             calendar
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={async () => {
+              onConfirm();
+            }}
+          >
+            Continue
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+};
+
+type GoogleScopesPromptDialogProps = {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onConfirm: () => void;
+};
+
+const GoogleScopesPromptDialog = ({
+  open,
+  onOpenChange,
+  onConfirm,
+}: GoogleScopesPromptDialogProps) => {
+  return (
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>
+            Google Calendar Permissions Required
+          </AlertDialogTitle>
+          <AlertDialogDescription>
+            In order to add events to your calendar, we need your permission to
+            access your Google calendar events.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
