@@ -106,7 +106,7 @@ export const signUp = async (prev: SignUpState, formData: FormData) => {
         first_name: result.data.firstname,
         last_name: result.data.lastname,
       },
-      emailRedirectTo: `${getURL()}auth/callback`,
+      emailRedirectTo: `${getURL()}auth/email-confirmed`,
     },
   });
 
