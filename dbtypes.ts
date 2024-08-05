@@ -176,6 +176,7 @@ export type Database = {
       }
       purchased_events: {
         Row: {
+          amount_total: number | null
           cs_id: string | null
           description: string | null
           end_date: string | null
@@ -185,6 +186,7 @@ export type Database = {
           name: string | null
           price: number | null
           pricing_model: Database["public"]["Enums"]["pricing_model"] | null
+          purchased_at: string | null
           start_date: string | null
           start_time: string | null
           thumbnail: string | null
@@ -192,6 +194,7 @@ export type Database = {
           wh_event_id: string | null
         }
         Insert: {
+          amount_total?: number | null
           cs_id?: string | null
           description?: string | null
           end_date?: string | null
@@ -201,6 +204,7 @@ export type Database = {
           name?: string | null
           price?: number | null
           pricing_model?: Database["public"]["Enums"]["pricing_model"] | null
+          purchased_at?: string | null
           start_date?: string | null
           start_time?: string | null
           thumbnail?: string | null
@@ -208,6 +212,7 @@ export type Database = {
           wh_event_id?: string | null
         }
         Update: {
+          amount_total?: number | null
           cs_id?: string | null
           description?: string | null
           end_date?: string | null
@@ -217,6 +222,7 @@ export type Database = {
           name?: string | null
           price?: number | null
           pricing_model?: Database["public"]["Enums"]["pricing_model"] | null
+          purchased_at?: string | null
           start_date?: string | null
           start_time?: string | null
           thumbnail?: string | null
