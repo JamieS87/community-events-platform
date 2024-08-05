@@ -79,8 +79,6 @@ export type SignUpState =
   | null;
 
 export const signUp = async (prev: SignUpState, formData: FormData) => {
-  const origin = headers().get("origin");
-
   const result = signUpFormSchema.safeParse({
     firstname: formData.get("firstname"),
     lastname: formData.get("lastname"),
