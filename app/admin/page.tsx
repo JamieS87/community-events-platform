@@ -14,9 +14,9 @@ export default async function AdminPage() {
   }
 
   return (
-    <div className="flex flex-col space-y-4 w-full p-2 max-w-7xl">
-      <div className="flex w-full items-center justify-between">
-        <h2>Events</h2>
+    <div className="flex flex-col w-full p-2 max-w-7xl pt-8">
+      <div className="flex w-full items-center justify-between border-b pb-4">
+        <h2 className="text-xl font-semibold">Events</h2>
         <CreateEventForm />
       </div>
       <AdminEventList initialEvents={events} />
