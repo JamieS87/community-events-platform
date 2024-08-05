@@ -1,5 +1,6 @@
 import { Database, Tables } from "@/dbtypes";
 import { createClient, User } from "@supabase/supabase-js";
+import { format } from "date-fns";
 import Stripe from "stripe";
 
 const supabaseAdmin = createClient<Database>(
@@ -63,7 +64,9 @@ export const insertSupabasePurchasedEvent = async (
   user_id: User["id"],
   event_id: Tables<"events">["id"],
   wh_event_id: string,
-  cs_id: string
+  cs_id: string,
+  amount_total: number | null,
+  purchased_at: number
 ) => {
   const { data: eventData, error: getEventError } = await supabaseAdmin
     .from("events")
@@ -91,6 +94,8 @@ export const insertSupabasePurchasedEvent = async (
     thumbnail: event.thumbnail,
     wh_event_id,
     cs_id,
+    amount_total,
+    purchased_at: format(new Date(purchased_at * 1000), "MM-dd-yyyy hh:mm:ss"),
   });
   if (error) {
     throw error;
