@@ -6,16 +6,14 @@ test("Staff users have an admin dashboard link in the auth menu", async ({
 }) => {
   await page.goto("/");
   await page.getByTestId("auth-avatar").click();
-  await expect(
-    page.getByRole("menuitem", { name: "Admin Dashboard" })
-  ).toBeVisible();
+  await expect(page.getByRole("menuitem", { name: "Admin" })).toBeVisible();
 });
 
 test("Staff users can create events", async ({ page }) => {
   await page.goto("/");
   await page.getByTestId("auth-avatar").click();
   const adminDashboardLink = page.getByRole("menuitem", {
-    name: "Admin Dashboard",
+    name: "Admin",
   });
   await expect(adminDashboardLink).toBeVisible();
   await adminDashboardLink.click();
