@@ -66,6 +66,7 @@ export default function PurchasePAYFEventButton({
                       £
                     </div>
                     <Input
+                      data-testId="payf-price"
                       className="border-l-0 rounded-tl-none rounded-bl-none w-full text-xl"
                       type="number"
                       placeholder="1.00"
