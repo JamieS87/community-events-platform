@@ -60,7 +60,7 @@ export default async function SuccessPage({
             src={`${process.env.NEXT_PUBLIC_OBJECT_STORAGE_URL}/${event.thumbnail}`}
             width={1024}
             height={1024}
-            className="max-w-sm aspect-video"
+            className="max-w-sm aspect-video object-cover"
             alt={`${event.name} thumbnail image`}
           />
           <p className="font-semibold">
