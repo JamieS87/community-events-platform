@@ -48,17 +48,36 @@ export default async function UserPurchasedEvents() {
         </div>
       ) : (
         <ul>
+          <li className="hidden md:grid md:grid-cols-4">
+            <span className="text-sm font-semibold text-center">Name</span>
+            <span className="text-sm font-semibold text-center">
+              Amount Total
+            </span>
+            <span className="text-sm font-semibold text-center">Purchased</span>
+            <span className="text-sm font-semibold text-center">--</span>
+          </li>
           {purchasedEvents.map(
             ({ id, event_id, name, amount_total, purchased_at }) => {
               return (
                 <li
                   key={id}
-                  className="border-t py-4 grid grid-cols-4 items-center"
+                  className="border-t py-4 grid grid-cols-4 items-center text-sm text-left md:text-center gap-y-2 md:gap-y-0"
                 >
-                  <Link href={`/events/${event_id}`}>{name}</Link>
-                  <p>{amount_total !== null ? amount_total / 100 : "N/A"}</p>
-                  <p>{purchased_at && format(purchased_at, "PPP")}</p>
-                  <div className="col-start-4 ml-auto">
+                  <Link
+                    className="col-span-4 md:col-span-1"
+                    href={`/events/${event_id}`}
+                  >
+                    {name}
+                  </Link>
+                  <p className="col-span-4 md:col-span-1">
+                    <span className="font-semibold md:hidden">Paid </span>
+                    {amount_total !== null ? `£${amount_total / 100}` : "N/A"}
+                  </p>
+                  <p className="col-span-4 md:col-span-1">
+                    <span className="font-semibold md:hidden">Purchased </span>
+                    {purchased_at && format(purchased_at, "PPP")}
+                  </p>
+                  <div className="col-span-4 md:col-span-1 md:col-start-4 md:ml-auto mt-2 md:mt-auto">
                     <AddToCalendarButton
                       event_id={event_id}
                       isInCalendar={
