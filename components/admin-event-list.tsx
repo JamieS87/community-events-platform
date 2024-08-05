@@ -101,12 +101,21 @@ export function AdminEventList({ initialEvents }: AdminEventListProps) {
         onClose={() => handleCloseDeleteEvent()}
       />
       <ul>
+        <li className="grid grid-cols-3 md:grid-cols-7 font-semibold text-center text-sm mt-4">
+          <span>Name</span>
+          <span className="hidden md:block">Pricing Model</span>
+          <span className="hidden md:block">Price</span>
+          <span>Published</span>
+          <span className="hidden md:block">Start Date</span>
+          <span className="hidden md:block">End Date</span>
+          <span>Actions</span>
+        </li>
         {optimisticEvents.map((event) => {
           return (
             <li
               key={event.id}
               className={
-                "items-center pt-2 text-center grid grid-cols-7 relative"
+                "items-center pt-4 text-center grid grid-cols-3 md:grid-cols-7 relative text-sm"
               }
             >
               {event.deleting && (
@@ -118,8 +127,8 @@ export function AdminEventList({ initialEvents }: AdminEventListProps) {
               <Link href={`/events/${event.id}`}>
                 <h3 className="flex-1">{event.name}</h3>
               </Link>
-              <p className="flex-1">{event.pricing_model}</p>
-              <p className="flex-1">
+              <p className="hidden md:block">{event.pricing_model}</p>
+              <p className="hidden md:block">
                 {event.pricing_model === "payf"
                   ? "N/A"
                   : `£${event.price / 100}`}
@@ -159,8 +168,10 @@ export function AdminEventList({ initialEvents }: AdminEventListProps) {
                   />
                 )}
               </span>
-              <p className="flex-1">{format(event.start_date, "PPP")}</p>
-              <p className="flex-1">{format(event.end_date, "PPP")}</p>
+              <p className="hidden md:block">
+                {format(event.start_date, "PPP")}
+              </p>
+              <p className="hidden md:block">{format(event.end_date, "PPP")}</p>
               <div>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
