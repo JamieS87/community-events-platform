@@ -12,6 +12,8 @@ create table purchased_events (
   price bigint,
   thumbnail text,
   wh_event_id text unique,
+  amount_total bigint ,
+  purchased_at timestamp,
   cs_id text unique
 );
 
