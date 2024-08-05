@@ -12,6 +12,17 @@ import {
 } from "@/app/lib/actions/auth";
 import { usePathname, useRouter } from "next/navigation";
 import { Calendar, CalendarCheck } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "./ui/alert-dialog";
 
 export default function AddToCalendarButton({
   event_id,
@@ -42,20 +53,15 @@ export default function AddToCalendarButton({
           break;
       }
     }
-  }, [state, router]);
+  }, [state, router, pathname]);
 
   return (
     <>
-      {googleIdentityRequired && (
-        <p>
-          Link a google account{" "}
-          <Button
-            onClick={async () => {
-              requestLinkGoogleIdentity(pathname);
-            }}
-          ></Button>
-        </p>
-      )}
+      <GoogleAccountPromptDialog
+        open={googleIdentityRequired}
+        onOpenChange={(open) => !open && setGoogleIdentityRequired(false)}
+        onConfirm={() => requestLinkGoogleIdentity(pathname)}
+      />
       {scopesRequired && (
         <p>
           Additional scopes required{" "}
@@ -87,3 +93,40 @@ export default function AddToCalendarButton({
     </>
   );
 }
+
+type GoogleAccountPromptDialogProps = {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onConfirm: () => void;
+};
+
+const GoogleAccountPromptDialog = ({
+  open,
+  onOpenChange,
+  onConfirm,
+}: GoogleAccountPromptDialogProps) => {
+  return (
+    <AlertDialog open={open} onOpenChange={onOpenChange}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Google Account Required</AlertDialogTitle>
+          <AlertDialogDescription>
+            A Google account is required to add events to your calendar. Click
+            continue to Link a Google account and add events to your Google
+            calendar
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={async () => {
+              onConfirm();
+            }}
+          >
+            Continue
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  );
+};
