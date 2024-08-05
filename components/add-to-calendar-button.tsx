@@ -23,6 +23,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
+import { useToast } from "./ui/use-toast";
 
 export default function AddToCalendarButton({
   event_id,
@@ -31,6 +32,7 @@ export default function AddToCalendarButton({
   event_id: Tables<"events">["id"];
   isInCalendar: boolean;
 }) {
+  const { toast } = useToast();
   const [state, addEventToCalendarAction] = useFormState(
     addEventToCalendar.bind(null, event_id),
     null
@@ -41,6 +43,15 @@ export default function AddToCalendarButton({
 
   const pathname = usePathname();
   const router = useRouter();
+
+  useEffect(() => {
+    if (state?.code === "success") {
+      toast({
+        title: "Event Added To Calendar",
+        description: "Event successfully added to calendar",
+      });
+    }
+  }, [state, toast]);
 
   useEffect(() => {
     if (state !== null) {
@@ -76,7 +87,8 @@ export default function AddToCalendarButton({
       )}
       {isInCalendar ? (
         <div className="text-primary-foreground rounded-md text-sm font-medium bg-blue-700 px-4 py-2 h-10 inline-flex items-center">
-          Added to calendar <CalendarCheck className="w-4 h-4 ml-4" />
+          Added to calendar
+          <CalendarCheck className="w-4 h-4 md:ml-4" />
         </div>
       ) : (
         <form>
@@ -86,7 +98,7 @@ export default function AddToCalendarButton({
             loadingIcon={true}
           >
             Add to Calendar
-            <Calendar className="w-4 h-4 ml-4" />
+            <Calendar className="w-4 h-4 md:ml-4" />
           </SubmitButton>
         </form>
       )}
