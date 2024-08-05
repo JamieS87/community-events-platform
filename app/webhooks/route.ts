@@ -46,7 +46,9 @@ export async function POST(request: Request) {
           userId,
           (checkoutSession.metadata as Record<string, any>).event_id,
           whEvent.id,
-          checkoutSession.id
+          checkoutSession.id,
+          checkoutSession.amount_total,
+          checkoutSession.created
         );
         return new Response(null, { status: 200 });
       } catch (error) {
