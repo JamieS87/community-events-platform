@@ -259,7 +259,11 @@ export const CreateEventForm = () => {
               name="price"
               control={form.control}
               render={({ field }) => (
-                <FormItem>
+                <FormItem
+                  className={
+                    form.getValues().pricing_model === "free" ? "hidden" : ""
+                  }
+                >
                   <FormLabel className="text-foreground">Price</FormLabel>
                   <FormControl>
                     <div className="flex">
