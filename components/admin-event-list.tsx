@@ -114,7 +114,7 @@ export function AdminEventList({ initialEvents }: AdminEventListProps) {
         onConfirm={() => handleConfirmDeleteEvents()}
         onClose={() => handleCloseDeleteEvent()}
       />
-      <ul>
+      <ul data-testid="admin-events-list">
         <li className="grid grid-cols-3 md:grid-cols-7 font-semibold text-center text-sm mt-4">
           <span>Name</span>
           <span className="hidden md:block">Pricing Model</span>
@@ -190,6 +190,7 @@ export function AdminEventList({ initialEvents }: AdminEventListProps) {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="outline" size="sm">
+                      <span className="sr-only">Actions</span>
                       <EllipsisVertical className="w-4 h-4" />
                     </Button>
                   </DropdownMenuTrigger>
