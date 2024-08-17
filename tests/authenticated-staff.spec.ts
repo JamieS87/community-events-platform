@@ -23,7 +23,6 @@ test("Staff users can create events", async ({ page, browserName }) => {
   const adminPage = new AdminPage(page);
   const eventsList = adminPage.page.getByTestId("admin-events-list");
   await expect(eventsList).toBeVisible();
-  const eventsListCount = await eventsList.locator("li").count();
   await adminPage.clickCreateEvent();
   await adminPage.page
     .getByRole("textbox", { name: "Name" })
