@@ -2,6 +2,9 @@ import { test as baseTest, expect } from "@playwright/test";
 import fs from "fs";
 import path from "path";
 
+import playwrightConfig from "@/playwright.config";
+import { LoginPage } from "@/tests/playwright-login-page";
+
 async function acquireAccount(id: number) {
   const accounts = [
     {
@@ -15,6 +18,7 @@ async function acquireAccount(id: number) {
 }
 
 export * from "@playwright/test";
+
 export const test = baseTest.extend<{}, { workerStorageState: string }>({
   // Use the same storage state for all tests in this worker.
   storageState: ({ workerStorageState }, use) => use(workerStorageState),
@@ -37,7 +41,7 @@ export const test = baseTest.extend<{}, { workerStorageState: string }>({
       // Important: make sure we authenticate in a clean environment by unsetting storage state.
       const page = await browser.newPage({
         storageState: undefined,
-        baseURL: "http://localhost:3000",
+        baseURL: playwrightConfig.use?.baseURL,
       });
 
       // Acquire a unique account, for example create a new one.
@@ -46,20 +50,12 @@ export const test = baseTest.extend<{}, { workerStorageState: string }>({
       // can run tests at the same time without interference.
       const account = await acquireAccount(id);
 
-      // Perform authentication steps. Replace these actions with your own.
-      await page.goto("/login");
-      await page.getByRole("textbox", { name: "Email" }).click();
-      await page.getByRole("textbox", { name: "Email" }).fill(account.email);
-      await page
-        .getByRole("textbox", { name: "Password" })
-        .fill(account.password);
-      await page.getByTestId("signin").click();
-      // Wait until the page receives the cookies.
-      //
-      // Sometimes login flow sets cookies in the process of several redirects.
-      // Wait for the final URL to ensure that the cookies are actually set.
+      // Perform authentication steps
+      const loginPage = new LoginPage(page);
+      await loginPage.goto();
+      await loginPage.login(account.email, account.password);
+
       await page.waitForURL("/");
-      // Alternatively, you can wait until the page reaches a state where all cookies are set.
       await expect(page.getByTestId("auth-avatar")).toBeVisible();
 
       // End of authentication steps.
