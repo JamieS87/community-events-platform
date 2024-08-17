@@ -43,6 +43,7 @@ type OptimisticEvent = {
 
 export function AdminEventList({ initialEvents }: AdminEventListProps) {
   const { toast } = useToast();
+
   const [eventToDelete, setEventToDelete] = useState<OptimisticEvent | null>(
     null
   );
@@ -115,7 +116,7 @@ export function AdminEventList({ initialEvents }: AdminEventListProps) {
         onClose={() => handleCloseDeleteEvent()}
       />
       <ul data-testid="admin-events-list">
-        <li className="grid grid-cols-3 md:grid-cols-7 font-semibold text-center text-sm mt-4">
+        <li className="grid grid-cols-3 md:grid-cols-7 font-semibold text-center text-sm mt-4 mb-4">
           <span>Name</span>
           <span className="hidden md:block">Pricing Model</span>
           <span className="hidden md:block">Price</span>
@@ -124,13 +125,13 @@ export function AdminEventList({ initialEvents }: AdminEventListProps) {
           <span className="hidden md:block">End Date</span>
           <span>Actions</span>
         </li>
-        {optimisticEvents.map((event) => {
+        {optimisticEvents.map((event, idx) => {
           return (
             <li
               key={event.id}
-              className={
-                "items-center pt-4 text-center grid grid-cols-3 md:grid-cols-7 relative text-sm"
-              }
+              className={`items-center py-2 text-center grid grid-cols-3 md:grid-cols-7 relative text-sm ${
+                idx % 2 === 0 ? "bg-gray-50" : ""
+              }`}
             >
               {event.deleting && (
                 <div className="w-full h-full absolute flex items-center justify-center font-semibold bg-gray-100 opacity-90">
@@ -304,6 +305,7 @@ const DeleteEventDialog = ({
             onClick={async () => {
               onConfirm();
             }}
+            className="bg-destructive text-destructive-foreground hover:bg-destructive/80"
           >
             Delete
           </AlertDialogAction>
