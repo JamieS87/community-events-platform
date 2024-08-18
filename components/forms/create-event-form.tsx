@@ -47,6 +47,7 @@ import Image from "next/image";
 import { CreateEventSubmitButton } from "../create-event-submit-button";
 import { uploadEventThumbnail } from "@/utils/events/client";
 import { useToast } from "../ui/use-toast";
+
 export const CreateEventForm = () => {
   const { toast } = useToast();
   const router = useRouter();
@@ -76,6 +77,7 @@ export const CreateEventForm = () => {
       toast({
         title: "Event created",
         description: "Successfully created event",
+        variant: "success",
       });
     }
   }, [state, toast]);
@@ -85,7 +87,6 @@ export const CreateEventForm = () => {
       if (type === "change") {
         if (name === "pricing_model") {
           if (values.pricing_model === "free") {
-            console.log("Setting price to 0");
             form.setValue("price", 0, { shouldValidate: true });
           }
         }
@@ -151,14 +152,14 @@ export const CreateEventForm = () => {
           Add Event
         </Button>
       </DialogTrigger>
-      <DialogContent className="overflow-y-scroll max-h-full">
+      <DialogContent className="overflow-y-scroll max-h-full md:max-h-[90vh] md:px-10 md:max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Create Event</DialogTitle>
+          <DialogTitle className="md:text-2xl">Create Event</DialogTitle>
           <DialogDescription>Create a new event</DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form
-            className="flex flex-col space-y-4 max-w-full"
+            className="flex flex-col space-y-4 max-w-full md:space-y-8"
             onSubmit={form.handleSubmit(onSubmit)}
           >
             <FormField
