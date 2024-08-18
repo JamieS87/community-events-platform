@@ -1,17 +1,17 @@
 "use client";
 
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 import Link from "next/link";
 
+import UserAvatar from "./user-avatar";
 import {
   DropdownMenu,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@radix-ui/react-dropdown-menu";
-import UserAvatar from "./user-avatar";
-import { DropdownMenuContent } from "./ui/dropdown-menu";
+  DropdownMenuContent,
+} from "@/components/ui/dropdown-menu";
 import { Gavel, LogOut, UserIcon } from "lucide-react";
-import { Session, User } from "@supabase/supabase-js";
+import { User } from "@supabase/supabase-js";
 import { signOut } from "@/app/lib/actions/auth";
 
 type SiteAuthProps = {
@@ -29,14 +29,14 @@ export default function SiteAuth({ user, isStaff }: SiteAuthProps) {
           <DropdownMenuItem className="py-2" asChild>
             <Link href="/admin" className="flex items-center w-full">
               <Gavel className="w-6 h-6 mr-4" />
-              <span className="text-lg">Admin</span>
+              <span className="font-semibold">Admin</span>
             </Link>
           </DropdownMenuItem>
         )}
         <DropdownMenuItem className="py-2" asChild>
           <Link href="/profile" className="flex items-center w-full">
             <UserIcon className="w-6 h-6 mr-4" />
-            <span className="text-lg">Profile</span>
+            <span className="font-semibold">Profile</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem
@@ -45,7 +45,7 @@ export default function SiteAuth({ user, isStaff }: SiteAuthProps) {
         >
           <div className="flex items-center">
             <LogOut className="w-6 h-6 mr-4" />
-            <span className="text-lg">Sign out</span>
+            <span className="font-semibold">Sign out</span>
           </div>
         </DropdownMenuItem>
       </DropdownMenuContent>
