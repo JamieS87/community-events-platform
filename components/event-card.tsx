@@ -25,10 +25,10 @@ export default async function EventCard({
   return (
     <Link href={`/events/${event.id}`}>
       <Card className="w-full rounded-sm">
-        <CardHeader className="flex flex-row items-center p-2">
-          <CardTitle className="flex-1 text-lg">{event.name}</CardTitle>
+        <CardHeader className="flex flex-row items-center p-2 py-4">
+          <CardTitle className="flex-1 text-xl">{event.name}</CardTitle>
         </CardHeader>
-        <CardContent className="p-2">
+        <CardContent className="py-4 px-2 pt-0">
           {event.thumbnail && (
             <Image
               src={`${process.env.NEXT_PUBLIC_OBJECT_STORAGE_URL}/${event.thumbnail}`}
@@ -39,7 +39,7 @@ export default async function EventCard({
             />
           )}
           {!event.thumbnail && <div className="aspect-video w-full"></div>}
-          <div className="flex items-center text-sm font-semibold mt-2 justify-between px-2">
+          <div className="flex items-center text-sm font-semibold mt-4 justify-between px-2">
             <span className="flex items-center">
               <Calendar className="w-4 h-4 mr-2" />
               {format(event.start_date, "PPP")}
@@ -52,7 +52,9 @@ export default async function EventCard({
               />
             )}
             {event.pricing_model === "paid" && (
-              <span className="text-lg">£{event.price / 100}</span>
+              <span className="text-md px-4 py-0.5 rounded-xl bg-primary text-primary-foreground">
+                £{event.price / 100}
+              </span>
             )}
           </div>
         </CardContent>
