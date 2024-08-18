@@ -152,14 +152,14 @@ export const CreateEventForm = () => {
           Add Event
         </Button>
       </DialogTrigger>
-      <DialogContent className="overflow-y-scroll max-h-full md:max-h-[90vh] md:px-10 md:max-w-2xl">
+      <DialogContent className="overflow-y-scroll max-h-full w-full md:max-h-[90vh] md:px-10 md:max-w-2xl">
         <DialogHeader>
           <DialogTitle className="md:text-2xl">Create Event</DialogTitle>
           <DialogDescription>Create a new event</DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form
-            className="flex flex-col space-y-4 max-w-full md:space-y-8"
+            className="flex flex-col gap-y-4 w-full md:space-y-8"
             onSubmit={form.handleSubmit(onSubmit)}
           >
             <FormField
@@ -213,6 +213,7 @@ export const CreateEventForm = () => {
                   <FormLabel className="text-foreground">Thumbnail</FormLabel>
                   <FormControl>
                     <Input
+                      className="border-primary/20 shadow-sm"
                       name={field.name}
                       type="file"
                       value={undefined}
@@ -265,13 +266,16 @@ export const CreateEventForm = () => {
                     form.getValues().pricing_model === "free" ? "hidden" : ""
                   }
                 >
-                  <FormLabel className="text-foreground">Price</FormLabel>
+                  <FormLabel className="text-foreground" htmlFor="price-input">
+                    Price
+                  </FormLabel>
                   <FormControl>
                     <div className="flex">
                       <div className="flex items-center font-semibold min-h-full px-4 rounded-tl-md rounded-bl-md border-t border-b border-l border-r">
                         £
                       </div>
                       <Input
+                        id="price-input"
                         className="border-l-0 rounded-tl-none rounded-bl-none"
                         type="number"
                         placeholder="1.00"
@@ -290,13 +294,13 @@ export const CreateEventForm = () => {
                 </FormItem>
               )}
             />
-            <div className="w-full flex items-center">
-              <div className="flex-1">
+            <div className="w-full flex items-center flex-col gap-y-4 md:flex-row md:gap-x-2">
+              <div className="w-full flex-1">
                 <FormField
                   name="start_date"
                   control={form.control}
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="flex flex-col">
                       <FormLabel className="text-foreground">
                         Start Date
                       </FormLabel>
@@ -308,7 +312,10 @@ export const CreateEventForm = () => {
                       <Popover>
                         <FormControl>
                           <PopoverTrigger asChild>
-                            <Button variant="outline" className="flex">
+                            <Button
+                              variant="outline"
+                              className="flex border-primary/20 shadow-sm"
+                            >
                               {field.value
                                 ? format(field.value, "PPP")
                                 : "Pick a date"}
@@ -339,12 +346,12 @@ export const CreateEventForm = () => {
                   )}
                 />
               </div>
-              <div className="flex-1">
+              <div className="w-full flex-1">
                 <FormField
                   name="end_date"
                   control={form.control}
                   render={({ field }) => (
-                    <FormItem>
+                    <FormItem className="flex flex-col">
                       <FormLabel className="text-foreground">
                         End Date
                       </FormLabel>
@@ -356,7 +363,10 @@ export const CreateEventForm = () => {
                       <Popover>
                         <FormControl>
                           <PopoverTrigger asChild>
-                            <Button variant="outline" className="flex">
+                            <Button
+                              variant="outline"
+                              className="flex border-primary/20 shadow-sm"
+                            >
                               {field.value
                                 ? format(field.value, "PPP")
                                 : "Pick a date"}
