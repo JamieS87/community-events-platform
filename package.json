@@ -10,7 +10,7 @@
     "test-db": "vitest --fileParallelism=false",
     "gentypes": "supabase gen types --lang=typescript --local > dbtypes.ts",
     "lint": "next lint && supabase db lint",
-    "test": "supabase db reset && npx playwright test --trace=on"
+    "test": "npx supabase db reset && npx playwright test --trace=on"
   },
   "author": "",
   "license": "ISC",
@@ -62,6 +62,7 @@
     "encoding": "^0.1.13",
     "eslint": "8.57.0",
     "eslint-config-next": "14.2.5",
+    "supabase": "^1.190.0",
     "vitest": "^2.0.3"
   }
 }
