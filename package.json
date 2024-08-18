@@ -8,8 +8,8 @@
     "build": "next build",
     "start": "next start",
     "test-db": "vitest --fileParallelism=false",
-    "gentypes": "supabase gen types --lang=typescript --local > dbtypes.ts",
-    "lint": "next lint && supabase db lint",
+    "gentypes": "npx supabase gen types --lang=typescript --local > dbtypes.ts",
+    "lint": "next lint && npx supabase db lint",
     "test": "npx supabase db reset && npx playwright test --trace=on"
   },
   "author": "",
