@@ -2,7 +2,7 @@
 
 import { Tables } from "@/dbtypes";
 import Link from "next/link";
-import { ReactNode, startTransition, useOptimistic, useState } from "react";
+import { startTransition, useOptimistic, useState } from "react";
 import { format } from "date-fns";
 import {
   AlertDialog,
@@ -202,13 +202,16 @@ export function AdminEventList({ initialEvents }: AdminEventListProps) {
               <span>
                 {event.published ? (
                   <Button
-                    variant="secondary"
+                    className="bg-green-900/20 text-green-900 hover:bg-green-900/40"
                     onClick={() => setEventToUnpublish(event)}
                   >
                     Unpublish
                   </Button>
                 ) : (
-                  <Button onClick={() => setEventToPublish(event)}>
+                  <Button
+                    className={"bg-green-900 hover:bg-green-900/80"}
+                    onClick={() => setEventToPublish(event)}
+                  >
                     Publish
                   </Button>
                 )}
