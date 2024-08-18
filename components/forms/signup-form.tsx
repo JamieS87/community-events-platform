@@ -173,7 +173,7 @@ export const SignUpForm = () => {
                       autoComplete="new-password"
                     />
                   </FormControl>
-                  <FormMessage className="text-red-700" />
+                  <FormMessage />
                 </FormItem>
               )}
             />
