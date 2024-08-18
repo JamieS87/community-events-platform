@@ -13,10 +13,15 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "./ui/alert-dialog";
 import { Button } from "./ui/button";
-import { EllipsisVertical, Loader2, Trash2 } from "lucide-react";
+import {
+  BookCheck,
+  BookDashed,
+  EllipsisVertical,
+  Loader2,
+  Trash2,
+} from "lucide-react";
 import {
   deleteEvent,
   publishEvent,
@@ -48,6 +53,13 @@ export function AdminEventList({ initialEvents }: AdminEventListProps) {
     null
   );
 
+  const [eventToPublish, setEventToPublish] = useState<OptimisticEvent | null>(
+    null
+  );
+
+  const [eventToUnpublish, setEventToUnpublish] =
+    useState<OptimisticEvent | null>(null);
+
   const [optimisticEvents, addOptimisticEvent] = useOptimistic(
     initialEvents.map((event) => ({
       ...event,
@@ -72,16 +84,48 @@ export function AdminEventList({ initialEvents }: AdminEventListProps) {
     }
   );
 
-  async function handleConfirmPublishEvent(event: OptimisticEvent) {
+  async function handleConfirmPublishEvent() {
+    if (!eventToPublish) return;
+    const event = eventToPublish;
+    setEventToPublish(null);
     startTransition(() => {
       addOptimisticEvent({ ...event, published: true });
     });
-    await publishEvent(event.id);
+    const result = await publishEvent(event.id);
+    if (result.code === "error") {
+      toast({
+        title: "Publish Event Failed",
+        description: result.message,
+        variant: "destructive",
+      });
+    } else if (result.code === "success") {
+      toast({
+        title: "Event Published",
+        description: result.message,
+        variant: "success",
+      });
+    }
   }
 
-  async function handleConfirmUnpublishEvent(event: OptimisticEvent) {
+  async function handleConfirmUnpublishEvent() {
+    if (!eventToUnpublish) return;
+    const event = eventToUnpublish;
+    setEventToUnpublish(null);
     startTransition(() => addOptimisticEvent({ ...event, published: false }));
-    await unpublishEvent(event.id);
+    const result = await unpublishEvent(event.id);
+    if (result.code === "error") {
+      toast({
+        title: "Unpublish Event Failed",
+        description: result.message,
+        variant: "destructive",
+      });
+    } else if (result.code === "success") {
+      toast({
+        title: "Event Unublished",
+        description: result.message,
+        variant: "success",
+      });
+    }
   }
 
   async function handleConfirmDeleteEvents() {
@@ -100,12 +144,9 @@ export function AdminEventList({ initialEvents }: AdminEventListProps) {
       toast({
         title: "Event Deleted",
         description: result.message,
+        variant: "success",
       });
     }
-  }
-
-  function handleCloseDeleteEvent() {
-    setEventToDelete(null);
   }
 
   return (
@@ -113,7 +154,17 @@ export function AdminEventList({ initialEvents }: AdminEventListProps) {
       <DeleteEventDialog
         open={eventToDelete !== null}
         onConfirm={() => handleConfirmDeleteEvents()}
-        onClose={() => handleCloseDeleteEvent()}
+        onClose={() => setEventToDelete(null)}
+      />
+      <PublishEventDialog
+        open={eventToPublish !== null}
+        onConfirm={() => handleConfirmPublishEvent()}
+        onClose={() => setEventToPublish(null)}
+      />
+      <UnpublishEventDialog
+        open={eventToUnpublish !== null}
+        onConfirm={() => handleConfirmUnpublishEvent()}
+        onClose={() => setEventToUnpublish(null)}
       />
       <ul data-testid="admin-events-list">
         <li className="grid grid-cols-3 md:grid-cols-7 font-semibold text-center text-sm mt-4 mb-4">
@@ -150,39 +201,19 @@ export function AdminEventList({ initialEvents }: AdminEventListProps) {
               </p>
               <span>
                 {event.published ? (
-                  <UnpublishEventDialog
-                    trigger={
-                      <Button variant="secondary" disabled={event.unpublishing}>
-                        {event.unpublishing ? (
-                          <>
-                            <Loader2 className="w-4 h-4 animate-spin" />{" "}
-                            Unpublishing...
-                          </>
-                        ) : (
-                          "Unpublish"
-                        )}
-                      </Button>
-                    }
-                    onConfirm={async () => handleConfirmUnpublishEvent(event)}
-                  />
+                  <Button
+                    variant="secondary"
+                    onClick={() => setEventToUnpublish(event)}
+                  >
+                    Unpublish
+                  </Button>
                 ) : (
-                  <PublishEventDialog
-                    trigger={
-                      <Button disabled={event.publishing}>
-                        {event.publishing ? (
-                          <>
-                            <Loader2 className="w-4 h-4 animate-spin" />{" "}
-                            Publishing...
-                          </>
-                        ) : (
-                          "Publish"
-                        )}
-                      </Button>
-                    }
-                    onConfirm={() => handleConfirmPublishEvent(event)}
-                  />
+                  <Button onClick={() => setEventToPublish(event)}>
+                    Publish
+                  </Button>
                 )}
               </span>
+
               <p className="hidden md:block">
                 {format(event.start_date, "PPP")}
               </p>
@@ -196,6 +227,30 @@ export function AdminEventList({ initialEvents }: AdminEventListProps) {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent>
+                    <DropdownMenuItem
+                      className="w-full"
+                      disabled={event.published}
+                      onClick={() => setEventToPublish(event)}
+                    >
+                      <div className="flex items-center w-full">
+                        <BookCheck className="w-4 h-4" />
+                        <span className="mx-auto text-sm font-semibold">
+                          Publish
+                        </span>
+                      </div>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="w-full"
+                      disabled={!event.published}
+                      onClick={() => setEventToUnpublish(event)}
+                    >
+                      <div className="flex items-center w-full">
+                        <BookDashed className="w-4 h-4" />
+                        <span className="mx-auto text-sm font-semibold">
+                          Unpublish
+                        </span>
+                      </div>
+                    </DropdownMenuItem>
                     <DropdownMenuItem
                       className="w-full"
                       onClick={() => setEventToDelete(event)}
@@ -219,17 +274,18 @@ export function AdminEventList({ initialEvents }: AdminEventListProps) {
 }
 
 type EventActionDialogProps = {
-  trigger: ReactNode;
+  open: boolean;
   onConfirm: () => void;
+  onClose: () => void;
 };
 
 const UnpublishEventDialog = ({
-  trigger,
+  open,
   onConfirm,
+  onClose,
 }: EventActionDialogProps) => {
   return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
+    <AlertDialog open={open} onOpenChange={(open) => !open && onClose()}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Unpublish Event?</AlertDialogTitle>
@@ -253,10 +309,13 @@ const UnpublishEventDialog = ({
   );
 };
 
-const PublishEventDialog = ({ trigger, onConfirm }: EventActionDialogProps) => {
+const PublishEventDialog = ({
+  open,
+  onConfirm,
+  onClose,
+}: EventActionDialogProps) => {
   return (
-    <AlertDialog>
-      <AlertDialogTrigger asChild>{trigger}</AlertDialogTrigger>
+    <AlertDialog open={open} onOpenChange={(open) => !open && onClose()}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Publish Event?</AlertDialogTitle>
@@ -279,17 +338,11 @@ const PublishEventDialog = ({ trigger, onConfirm }: EventActionDialogProps) => {
   );
 };
 
-type DeleteEventDialogProps = {
-  open: boolean;
-  onConfirm: () => void;
-  onClose: () => void;
-};
-
 const DeleteEventDialog = ({
   onConfirm,
   open,
   onClose,
-}: DeleteEventDialogProps) => {
+}: EventActionDialogProps) => {
   return (
     <AlertDialog open={open} onOpenChange={(open) => !open && onClose()}>
       <AlertDialogContent>
