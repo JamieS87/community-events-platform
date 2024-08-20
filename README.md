@@ -155,8 +155,6 @@ _Note the lines `GOOGLE_AUTH_CLIENT_ID` and `GOOGLE_AUTH_CLIENT_SECRET` now cont
 
 ### `SUPABASE_ANON_KEY` and `SUPABASE_SERVICE_ROLE_KEY`
 
-CHANGE THIS. GET KEYS FROM SUPABASE PROJECT DASHBOARD
-
 Type the following into the command line and press the Return (↵) key.
 
 ```console
