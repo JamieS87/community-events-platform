@@ -161,7 +161,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY
 NEXT_PUBLIC_OBJECT_STORAGE_URL=$SUPABASE_API_URL/storage/v1/object/public
 ```
 
-_Note the lines `GOOGLE_AUTH_CLIENT_ID` and `GOOGLE_AUTH_CLIENT_SECRET` now contain the values from the blue boxes in the scereenshots above._
+_Note the lines `GOOGLE_AUTH_CLIENT_ID` and `GOOGLE_AUTH_CLIENT_SECRET` now contain the values from the blue boxes in the screenshots above._
 
 ### `SUPABASE_ANON_KEY` and `SUPABASE_SERVICE_ROLE_KEY`
 
