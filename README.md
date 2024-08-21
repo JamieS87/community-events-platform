@@ -143,7 +143,7 @@ Copy the **Client ID** and **Client secret**
 
 Copy and paste the values into your `.env` file under the `GOOGLE_AUTH_CLIENT_ID` and `GOOGLE_AUTH_CLIENT_SECRET` variables.
 
-**IMPORTANT:** The file needs to be saved before proceeding to the next step. When saving the file, ensure it is saved with the filename `.env`.
+**IMPORTANT:** After copying and pasting, the file needs to be saved before proceeding to the next step. When saving the file, ensure it is saved with the filename `.env`.
 
 ```text
 SUPABASE_API_URL=http://127.0.0.1:54321
