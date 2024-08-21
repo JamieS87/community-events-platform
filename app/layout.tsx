@@ -21,11 +21,11 @@ export default function RootLayout({
     <html lang="en">
       <body className="flex flex-col items-center">
         <SiteNav />
-        <main className="w-full min-h-screen flex flex-col gap-y-4 items-center">
+        <main className="w-full min-h-screen flex flex-col gap-y-4 items-center bg-gradient-to-b from-slate-50 to-slate-100 pb-4 px-2">
           {children}
         </main>
         <Toaster />
-        <footer className="w-full border-t border-t-foreground/10 p-8 flex justify-center text-center text-xs mt-4">
+        <footer className="w-full p-8 flex justify-center text-center text-primary text-xs bg-white border-t border-t-primary/20">
           <p>
             Powered by{" "}
             <a

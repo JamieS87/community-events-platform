@@ -33,7 +33,7 @@ export default async function ProfilePage() {
 
   return (
     <>
-      <div className="flex flex-col p-2 gap-y-8 mt-8 w-full max-w-7xl mx-auto">
+      <div className="flex flex-col p-4 gap-y-8 mt-8 w-full max-w-7xl mx-auto bg-white rounded-md shadow-sm min-h-[70dvh]">
         <div
           className="flex items-center mx-auto space-x-4"
           data-testid="profile-user"
@@ -64,7 +64,7 @@ export default async function ProfilePage() {
             </div>
           )}
         </div>
-        <UserPurchasedEvents/>
+        <UserPurchasedEvents />
       </div>
     </>
   );

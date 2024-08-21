@@ -39,7 +39,7 @@ export default async function UserPurchasedEvents() {
 
   return (
     <div data-testid="purchased-events">
-      <div className="flex items-center justify-between border-b pt-8">
+      <div className="flex items-center justify-between border-b pt-8 mb-4">
         <h2 className="font-semibold text-xl pb-4">My Purchased Events</h2>
       </div>
       {!hasPurchasedEvents ? (

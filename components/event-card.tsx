@@ -24,7 +24,7 @@ export default async function EventCard({
 }) {
   return (
     <Link href={`/events/${event.id}`}>
-      <Card className="w-full rounded-sm">
+      <Card className="w-full rounded-sm bg-white/90">
         <CardHeader className="flex flex-row items-center p-2 py-4">
           <CardTitle className="flex-1 text-xl">{event.name}</CardTitle>
         </CardHeader>

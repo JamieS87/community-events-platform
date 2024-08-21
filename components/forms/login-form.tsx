@@ -45,7 +45,7 @@ export const LoginForm = () => {
   const searchParams = useSearchParams();
 
   return (
-    <Card className="max-w-md w-full my-auto">
+    <Card className="max-w-md w-full my-auto border">
       <CardHeader>
         <CardTitle>Login</CardTitle>
         <CardDescription>Log in or sign up for an account</CardDescription>

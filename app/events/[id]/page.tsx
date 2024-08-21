@@ -31,7 +31,7 @@ export default async function EventPage({
   } = await supabase.auth.getUser();
 
   return (
-    <div className="flex flex-col gap-y-6 mt-6 max-w-4xl w-full p-2">
+    <div className="flex flex-col gap-y-6 mt-6 max-w-4xl w-full p-2 bg-white rounded-md shadow-sm border">
       {/* Heading */}
       <div className="flex items-center justify-between">
         <h2 className="font-semibold text-2xl">{event.name}</h2>

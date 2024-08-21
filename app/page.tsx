@@ -21,7 +21,7 @@ export default async function Index() {
     <div className="w-full max-w-screen-2xl mx-auto flex flex-col gap-20">
       <div className="w-full flex flex-col gap-20 px-2">
         <IndexHeader />
-        <main className="w-full flex flex-col gap-6">
+        <div className="w-full flex flex-col gap-6 h-full">
           {/* Latest events */}
           <section id="latest-events">
             <Suspense
@@ -150,7 +150,7 @@ export default async function Index() {
               />
             </Suspense>
           </section>
-        </main>
+        </div>
       </div>
     </div>
   );
