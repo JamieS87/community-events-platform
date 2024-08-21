@@ -7,6 +7,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "start:local": "npx supabase start && next start",
     "test-db": "vitest --fileParallelism=false",
     "gentypes": "npx supabase gen types --lang=typescript --local > dbtypes.ts",
     "lint": "next lint && npx supabase db lint",
