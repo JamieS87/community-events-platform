@@ -125,11 +125,19 @@ NEXT_PUBLIC_OBJECT_STORAGE_URL=$SUPABASE_API_URL/storage/v1/object/public
 
 Get your Google Client ID and Google Client Secret by visiting the [Google Cloud Console](https://console.cloud.google.com/welcome) and following the steps in the screenshots below.
 
+Click **APIs & Services**
+
 ![Google cloud console](/readme_assets/google-cloud-console.jpg)
+
+Click **Credentials**
 
 ![Google cloud console dashboard](/readme_assets/google-cloud-console-dashboard.jpg)
 
+Click the area highlighted by the red box
+
 ![Google cloud console dashboard oauth](/readme_assets/google-cloud-console-dashboard-oauth.jpg)
+
+Copy the **Client ID** and **Client secret**
 
 ![Google cloud console dashboard oauth credentials](/readme_assets/google-cloud-console-dashboard-oauth-credentials.jpg)
 
@@ -208,7 +216,11 @@ _Note the lines `SUPABASE_ANON_KEY` and `SUPABASE_SERVICE_ROLE_KEY` now contain 
 
 Get your Stripe secret key by visiting [Stripe Dashboard](https://dashboard.stripe.com/test/dashboard) and following the screenshots below.
 
+Click the area in the red box to reveal your **Secret Key**
+
 ![Stripe Dashboard](/readme_assets/stripe-dashboard-secret-key.jpg)
+
+Click the area in the blue box to copy your **Secret Key**
 
 ![Stripe Dashboard Secret Key Reveals](/readme_assets/stripe-dashboard-secret-key-revealed.jpg)
 
@@ -305,3 +317,28 @@ npm run start
 ```
 
 Now visit [http://localhost:3000](http://localhost:3000) to see the application in action.
+
+### Creating A Staff Account
+
+To add events to the application, you must have a staff account.
+
+To create a staff account, type and run the following into the command line, replacing **your_email_address** with the email address you'd like to use for the account, and **your_password** with the desired password for the account.
+
+_Note: password must be at least 10 characters in length._
+
+```console
+npm run create-staff-user -- -e your_email_address -p your_password
+```
+
+Once you've created the account, visit [http://localhost:3000/login](http://localhost:3000/login) to log in to the account.
+
+### Adding Events
+
+If you don't already have a staff account, follow [these instructions](#creating-a-staff-account) and log in to the account.
+
+Once logged in, the user menu will have an **Admin** item. Click **Admin** to be taken to the admin page.
+
+alternatively, visit [http://localhost:3000/admin](http://localhost:3000/admin).
+
+Once on the admin page, click **Add Event**.
+
