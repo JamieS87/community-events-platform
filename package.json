@@ -10,7 +10,8 @@
     "test-db": "vitest --fileParallelism=false",
     "gentypes": "npx supabase gen types --lang=typescript --local > dbtypes.ts",
     "lint": "next lint && npx supabase db lint",
-    "test": "npx supabase db reset && npx playwright test --trace=on"
+    "test": "npx supabase db reset && npx playwright test --trace=on",
+    "create-staff-user": "npx tsx create-staff-user.ts"
   },
   "author": "",
   "license": "ISC",
@@ -59,10 +60,12 @@
     "@types/node": "20.11.5",
     "@types/react": "18.2.48",
     "@types/react-dom": "18.2.18",
+    "commander": "^12.1.0",
     "encoding": "^0.1.13",
     "eslint": "8.57.0",
     "eslint-config-next": "14.2.5",
     "supabase": "^1.190.0",
+    "tsx": "^4.17.0",
     "vitest": "^2.0.3"
   }
 }
