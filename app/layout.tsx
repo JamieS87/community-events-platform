@@ -19,13 +19,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="flex flex-col items-center">
+      <body className="flex flex-col bg-background text-foreground">
         <SiteNav />
-        <main className="w-full min-h-screen flex flex-col gap-y-4 items-center bg-gradient-to-b from-slate-50 to-slate-100 pb-4 px-2">
-          {children}
-        </main>
+        <main className="flex flex-col w-full min-h-screen">{children}</main>
         <Toaster />
-        <footer className="w-full p-8 flex justify-center text-center text-primary text-xs bg-white border-t border-t-primary/20">
+        <footer className="w-full p-8 flex justify-center text-center bg-secondary text-secondary-foreground text-xs border-t border-t-primary/20">
           <p>
             Powered by{" "}
             <a

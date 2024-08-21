@@ -15,13 +15,12 @@ export default function PricingModelBadge({
   return (
     <Badge
       className={cn(
-        "text-md",
-        "bg-sky-200 border-sky-400 text-sky-700 hover:bg-sky-200 hover:border-sky-400 hover:text-sky-700 hover:cursor-default",
+        "bg-info text-info-foreground border border-info/80 hover:bg-info hover:cursor-default px-4 py-2",
         props.className
       )}
       {...props}
     >
-      {pricing_model[0].toUpperCase() + pricing_model.slice(1)}
+      {pricing_model[0].toUpperCase() + pricing_model.slice(1).toUpperCase()}
     </Badge>
   );
 }

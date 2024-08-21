@@ -22,7 +22,7 @@ export default function SiteAuth({ user, isStaff }: SiteAuthProps) {
   return user ? (
     <DropdownMenu>
       <DropdownMenuTrigger>
-        <UserAvatar user={user} />
+        <UserAvatar user={user} className="border-2 border-primary" />
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" sideOffset={12}>
         {isStaff && (

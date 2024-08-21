@@ -14,13 +14,16 @@ export default async function AdminPage() {
   }
 
   return (
-    <div className="flex flex-col w-full p-2 max-w-7xl pt-8">
-      <div className="bg-white p-4 rounded shadow-sm pt-4 ">
-        <div className="flex w-full items-center justify-between border-b pb-4">
-          <h2 className="text-xl font-semibold">Events</h2>
-          <CreateEventForm />
+    <div className="w-full min-h-screen">
+      <div className="px-2 py-4 max-w-7xl mx-auto w-full">
+        <h2 className="text-2xl font-semibold mb-4">Admin Dashboard</h2>
+        <div className="p-4 border border-slate-300 shadow-sm rounded-md bg-white">
+          <div className="flex w-full items-center justify-between border-b pb-4">
+            <h2 className="text-xl font-semibold">Events</h2>
+            <CreateEventForm />
+          </div>
+          <AdminEventList initialEvents={events} />
         </div>
-        <AdminEventList initialEvents={events} />
       </div>
     </div>
   );

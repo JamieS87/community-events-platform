@@ -45,7 +45,7 @@ export const LoginForm = () => {
   const searchParams = useSearchParams();
 
   return (
-    <Card className="max-w-md w-full my-auto border">
+    <Card className="max-w-md w-full border">
       <CardHeader>
         <CardTitle>Login</CardTitle>
         <CardDescription>Log in or sign up for an account</CardDescription>
@@ -148,7 +148,7 @@ export const LoginForm = () => {
             )}
             loadingIcon={true}
             pendingText="Signing in with google"
-            className="mx-auto"
+            className="mx-auto bg-white"
           >
             <div className="w-6 h-6 mr-4 flex">
               <GoogleIcon />

@@ -181,7 +181,7 @@ export function AdminEventList({ initialEvents }: AdminEventListProps) {
             <li
               key={event.id}
               className={`items-center py-2 text-center grid grid-cols-3 md:grid-cols-7 relative text-sm ${
-                idx % 2 === 0 ? "bg-gray-50" : ""
+                idx % 2 === 0 ? "bg-gray-50/80" : ""
               }`}
             >
               {event.deleting && (
@@ -202,15 +202,18 @@ export function AdminEventList({ initialEvents }: AdminEventListProps) {
               <span>
                 {event.published ? (
                   <Button
-                    className="bg-green-900/20 text-green-900 hover:bg-green-900/40"
+                    variant="outline"
+                    className="border border-primary"
                     onClick={() => setEventToUnpublish(event)}
+                    size="sm"
                   >
                     Unpublish
                   </Button>
                 ) : (
                   <Button
-                    className={"bg-green-900 hover:bg-green-900/80"}
+                    className={"bg-primary"}
                     onClick={() => setEventToPublish(event)}
+                    size="sm"
                   >
                     Publish
                   </Button>

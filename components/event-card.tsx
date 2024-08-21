@@ -24,9 +24,9 @@ export default async function EventCard({
 }) {
   return (
     <Link href={`/events/${event.id}`}>
-      <Card className="w-full rounded-sm bg-white/90">
-        <CardHeader className="flex flex-row items-center p-2 py-4">
-          <CardTitle className="flex-1 text-xl">{event.name}</CardTitle>
+      <Card className="w-full rounded-sm bg-card text-card-foreground">
+        <CardHeader className="flex flex-row items-center p-2 py-2">
+          <CardTitle className="flex-1 text-2xl">{event.name}</CardTitle>
         </CardHeader>
         <CardContent className="py-4 px-2 pt-0">
           {event.thumbnail && (
@@ -39,20 +39,17 @@ export default async function EventCard({
             />
           )}
           {!event.thumbnail && <div className="aspect-video w-full"></div>}
-          <div className="flex items-center text-sm font-semibold mt-4 justify-between px-2">
+          <div className="text-foreground/80 flex items-center text-sm font-semibold mt-4 justify-between px-2">
             <span className="flex items-center">
               <Calendar className="w-4 h-4 mr-2" />
               {format(event.start_date, "PPP")}
             </span>
             {(event.pricing_model === "free" ||
               event.pricing_model === "payf") && (
-              <PricingModelBadge
-                pricing_model={event.pricing_model}
-                variant={"secondary"}
-              />
+              <PricingModelBadge pricing_model={event.pricing_model} />
             )}
             {event.pricing_model === "paid" && (
-              <span className="text-md px-4 py-0.5 rounded-xl bg-primary text-primary-foreground">
+              <span className="text-md px-4 py-2 rounded-full bg-black text-white">
                 £{event.price / 100}
               </span>
             )}

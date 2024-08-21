@@ -13,9 +13,10 @@ export default async function SignUpConfirmPage({
           Confirmation Email Sent <CircleCheckBig className="ml-4 w-8 h-8" />
         </CardTitle>
       </CardHeader>
-      <CardContent className="text-center">
+      <CardContent className="text-center flex flex-col gap-y-4">
         <p>
-          A confirmation email has been sent to{" "}
+          A confirmation email has been sent to
+          <br />
           <span className="font-semibold">{searchParams.email}</span>
         </p>
         <p>

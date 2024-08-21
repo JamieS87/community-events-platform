@@ -19,7 +19,7 @@ export const EventsListHeader = async ({
       "max-w-[200px] animate-pulse h-6 bg-gray-100",
       props.className,
     ]),
-    notLoading: cn(["text-xl font-semibold text-primary/80", props.className]),
+    notLoading: cn(["text-4xl", props.className]),
   };
 
   return (

@@ -2,8 +2,8 @@ import Link from "next/link";
 
 export default function IndexHeader() {
   return (
-    <div className="w-full min-h-[60dvh] flex flex-col justify-center items-center gap-10">
-      <h2 className="font-black text-4xl text-center text-primary">
+    <div className="w-full min-h-[60dvh] flex flex-col justify-center items-center gap-16 p-2">
+      <h2 className="font-black text-4xl text-center">
         Community Events Platform
       </h2>
       <Link href="#latest-events">

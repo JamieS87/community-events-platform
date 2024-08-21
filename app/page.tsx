@@ -18,16 +18,16 @@ export default async function Index() {
   const perSectionEventCount = 6;
 
   return (
-    <div className="w-full max-w-screen-2xl mx-auto flex flex-col gap-20">
-      <div className="w-full flex flex-col gap-20 px-2">
-        <IndexHeader />
-        <div className="w-full flex flex-col gap-6 h-full">
-          {/* Latest events */}
-          <section id="latest-events">
+    <div className="w-full flex flex-col">
+      <IndexHeader />
+      <div className="w-full flex flex-col">
+        {/* Latest events */}
+        <section id="latest-events" className="w-full pt-8 pb-8">
+          <div className="mx-auto max-w-screen-2xl px-2">
             <Suspense
               fallback={
                 <>
-                  <EventsListHeader className="mb-4 text-2xl" loading={true} />
+                  <EventsListHeader className="mb-8" loading={true} />
                   <LoadingEventsListItems
                     className="grid grid-cols-1 md:grid-cols-3 gap-4"
                     count={perSectionEventCount}
@@ -38,7 +38,7 @@ export default async function Index() {
                 </>
               }
             >
-              <EventsListHeader className="mb-4 text-2xl">
+              <EventsListHeader className="mb-8">
                 Latest events
               </EventsListHeader>
               <EventsListItems
@@ -53,13 +53,15 @@ export default async function Index() {
                 }}
               />
             </Suspense>
-          </section>
-          {/* Latest paid events */}
-          <section>
+          </div>
+        </section>
+        {/* Latest paid events */}
+        <section className="w-full pb-8">
+          <div className="mx-auto max-w-screen-2xl px-2">
             <Suspense
               fallback={
                 <>
-                  <EventsListHeader className="mb-4 text-2xl" loading={true} />
+                  <EventsListHeader className="mb-8" loading={true} />
                   <LoadingEventsListItems
                     className="grid grid-cols-1 md:grid-cols-3 gap-4"
                     count={perSectionEventCount}
@@ -70,9 +72,7 @@ export default async function Index() {
                 </>
               }
             >
-              <EventsListHeader className="mb-4 text-2xl">
-                Paid events
-              </EventsListHeader>
+              <EventsListHeader className="mb-8">Paid events</EventsListHeader>
               <EventsListItems
                 className="grid grid-cols-1 md:grid-cols-3 gap-4"
                 getter={getLatestPaidEvents.bind(null, perSectionEventCount)}
@@ -85,13 +85,15 @@ export default async function Index() {
                 }}
               />
             </Suspense>
-          </section>
-          {/* Latest PAYF Events */}
-          <section>
+          </div>
+        </section>
+        {/* Latest PAYF Events */}
+        <section className="w-full pb-8">
+          <div className="mx-auto max-w-screen-2xl px-2">
             <Suspense
               fallback={
                 <>
-                  <EventsListHeader className="mb-4 text-2xl" loading={true} />
+                  <EventsListHeader className="mb-8" loading={true} />
                   <LoadingEventsListItems
                     className="grid grid-cols-1 md:grid-cols-3 gap-4"
                     count={perSectionEventCount}
@@ -102,7 +104,7 @@ export default async function Index() {
                 </>
               }
             >
-              <EventsListHeader className="mb-4 text-2xl">
+              <EventsListHeader className="mb-8">
                 Pay as you feel events
               </EventsListHeader>
               <EventsListItems
@@ -117,13 +119,15 @@ export default async function Index() {
                 }}
               />
             </Suspense>
-          </section>
-          {/* Latest free events */}
-          <section>
+          </div>
+        </section>
+        {/* Latest free events */}
+        <section className="w-full pb-8">
+          <div className="mx-auto max-w-screen-2xl px-2">
             <Suspense
               fallback={
                 <>
-                  <EventsListHeader className="mb-4 text-2xl" loading={true} />
+                  <EventsListHeader className="mb-8" loading={true} />
                   <LoadingEventsListItems
                     className="grid grid-cols-1 md:grid-cols-3 gap-4"
                     count={perSectionEventCount}
@@ -134,9 +138,7 @@ export default async function Index() {
                 </>
               }
             >
-              <EventsListHeader className="mb-4 text-2xl">
-                Free events
-              </EventsListHeader>
+              <EventsListHeader className="mb-8">Free events</EventsListHeader>
               <EventsListItems
                 className="grid grid-cols-1 md:grid-cols-3 gap-4"
                 getter={getLatestFreeEvents.bind(null, perSectionEventCount)}
@@ -149,8 +151,8 @@ export default async function Index() {
                 }}
               />
             </Suspense>
-          </section>
-        </div>
+          </div>
+        </section>
       </div>
     </div>
   );

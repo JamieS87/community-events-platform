@@ -20,7 +20,7 @@ export default async function SiteNav() {
     : false;
 
   return (
-    <nav className="w-full flex items-center justify-center border-b">
+    <nav className="w-full flex items-center justify-center border-b border-b-foreground/10">
       {/* left */}
       <div className="w-full max-w-screen-2xl mx-auto flex items-center justify-center p-2">
         <div className="w-full flex items-center">

@@ -147,7 +147,7 @@ export const CreateEventForm = () => {
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button>
+        <Button className="bg-slate-900">
           <PlusIcon className="w-6 h-6" />
           Add Event
         </Button>

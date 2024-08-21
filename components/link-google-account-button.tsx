@@ -9,7 +9,7 @@ export default function LinkGoogleAccount() {
   return (
     <Button
       variant={"outline"}
-      className="flex items-center"
+      className="flex items-center bg-white"
       onClick={() => {
         requestLinkGoogleIdentity(pathname);
       }}
