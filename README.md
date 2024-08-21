@@ -259,7 +259,7 @@ Follow the instructions on the screen, making sure to click **Allow access** whe
 When finished, type the following into the command line and press the Return (↵) key.
 
 ```console
-stripe listen --foward-to localhost:3000/webhooks
+stripe listen --forward-to localhost:3000/webhooks
 ```
 
 You should see output similar to the following.
