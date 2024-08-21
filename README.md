@@ -143,6 +143,8 @@ Copy the **Client ID** and **Client secret**
 
 Copy and paste the values into your `.env` file under the `GOOGLE_AUTH_CLIENT_ID` and `GOOGLE_AUTH_CLIENT_SECRET` variables.
 
+**IMPORTANT:** The file needs to be saved before proceeding to the next step. When saving the file, ensure it is saved with the filename `.env`.
+
 ```text
 SUPABASE_API_URL=http://127.0.0.1:54321
 SUPABASE_ANON_KEY=eyJhb_lots_more_anon_key_chars...
@@ -169,6 +171,8 @@ Type the following into the command line and press the Return (↵) key.
 npx supabase start
 ```
 
+_Note: if the above command doesn't show the example output, run:_ `npx supabase status` _instead._
+
 When the command has finished running, you should see something similar to the following
 
 ```console
@@ -187,8 +191,6 @@ service_role key: eyJhb_lots_more_service_role_key_chars...
    S3 Secret Key: 850...
        S3 Region: local
 ```
-
-_Note: if the above command doesn't show the example output, run:_ `npx supabase status` _instead_
 
 Copy and paste the values of `anon key` and `service_role key` from above to your `.env` file.
 
@@ -341,4 +343,3 @@ Once logged in, the user menu will have an **Admin** item. Click **Admin** to be
 alternatively, visit [http://localhost:3000/admin](http://localhost:3000/admin).
 
 Once on the admin page, click **Add Event**.
-
