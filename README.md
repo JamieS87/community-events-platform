@@ -315,7 +315,7 @@ You've reached the final step!
 Type the following into the command line and press the Return (↵) key.
 
 ```console
-npm run start
+npm run start:local
 ```
 
 Now visit [http://localhost:3000](http://localhost:3000) to see the application in action.
