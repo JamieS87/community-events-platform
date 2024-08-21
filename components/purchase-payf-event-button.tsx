@@ -64,6 +64,7 @@ export default function PurchasePAYFEventButton({
                   <FormLabel className="sr-only">Price</FormLabel>
                   <FormControl className="flex items-center font-semibold min-h-full px-4 rounded-tl-md rounded-bl-md border-t border-b border-l border-r">
                     <Input
+                      data-testId="payf-price"
                       className="border-l-0 rounded-tl-none rounded-bl-none w-full text-xl"
                       type="number"
                       placeholder="1.00"
