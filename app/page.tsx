@@ -18,12 +18,12 @@ export default async function Index() {
   const perSectionEventCount = 6;
 
   return (
-    <div className="w-full max-w-7xl mx-auto flex flex-col gap-20">
+    <div className="w-full max-w-screen-2xl mx-auto flex flex-col gap-20">
       <div className="w-full flex flex-col gap-20 px-2">
         <IndexHeader />
         <main className="w-full flex flex-col gap-6">
           {/* Latest events */}
-          <section>
+          <section id="latest-events">
             <Suspense
               fallback={
                 <>
@@ -42,7 +42,7 @@ export default async function Index() {
                 Latest events
               </EventsListHeader>
               <EventsListItems
-                className="grid grid-cols-1 md:grid-cols-3 gap-4"
+                className="grid grid-cols-1 md:grid-cols-3 gap-6"
                 getter={getLatestEvents.bind(null, perSectionEventCount)}
                 render={({ event }) => {
                   return (

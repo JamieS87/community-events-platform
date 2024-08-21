@@ -63,10 +63,11 @@ export async function publishEvent(eventId: Tables<"events">["id"]) {
     .eq("id", eventId);
 
   if (error) {
-    throw error;
+    return { code: "error", message: "Unable to publish event" };
   }
 
   revalidatePath("/");
+  return { code: "success", message: "Event published" };
 }
 
 export async function unpublishEvent(eventId: Tables<"events">["id"]) {
@@ -78,8 +79,9 @@ export async function unpublishEvent(eventId: Tables<"events">["id"]) {
     .eq("id", eventId);
 
   if (error) {
-    throw error;
+    return { code: "error", message: "Unable to unpublish event" };
   }
 
   revalidatePath("/");
+  return { code: "success", message: "Event unpublished" };
 }

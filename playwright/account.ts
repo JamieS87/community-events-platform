@@ -2,19 +2,47 @@ import { test as baseTest, expect } from "@playwright/test";
 import fs from "fs";
 import path from "path";
 
+import playwrightConfig from "@/playwright.config";
+import { LoginPage } from "@/tests/playwright-login-page";
+import { createClient } from "@supabase/supabase-js";
+import { Database } from "@/dbtypes";
+
 async function acquireAccount(id: number) {
-  const accounts = [
-    {
-      email: "eventfan@dev.com",
-      password: "eventfan@dev.com",
-    },
-    { email: "eventfan2@dev.com", password: "eventfan2@dev.com" },
-    { email: "eventfan3@dev.com", password: "eventfan3@dev.com" },
-  ];
-  return accounts[id];
+  const supabaseAdmin = createClient<Database>(
+    process.env.SUPABASE_API_URL!!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!!,
+    { auth: { persistSession: false, detectSessionInUrl: false } }
+  );
+
+  const email = `testuser${id}@dev.com`;
+  const password = email;
+
+  const { data, error } = await supabaseAdmin.auth.admin.createUser({
+    email,
+    password,
+    email_confirm: true,
+  });
+
+  if (error) {
+    throw error;
+  }
+  return { email, password, userId: data.user.id };
 }
 
+// async function acquireAccount(id: number) {
+//   const accounts = [
+//     {
+//       email: "eventfan@dev.com",
+//       password: "eventfan@dev.com",
+//     },
+//     { email: "eventfan2@dev.com", password: "eventfan2@dev.com" },
+//     { email: "eventfan3@dev.com", password: "eventfan3@dev.com" },
+//   ];
+//   return accounts[id];
+// }
+
 export * from "@playwright/test";
+
 export const test = baseTest.extend<{}, { workerStorageState: string }>({
   // Use the same storage state for all tests in this worker.
   storageState: ({ workerStorageState }, use) => use(workerStorageState),
@@ -37,7 +65,7 @@ export const test = baseTest.extend<{}, { workerStorageState: string }>({
       // Important: make sure we authenticate in a clean environment by unsetting storage state.
       const page = await browser.newPage({
         storageState: undefined,
-        baseURL: "http://localhost:3000",
+        baseURL: playwrightConfig.use?.baseURL,
       });
 
       // Acquire a unique account, for example create a new one.
@@ -46,20 +74,12 @@ export const test = baseTest.extend<{}, { workerStorageState: string }>({
       // can run tests at the same time without interference.
       const account = await acquireAccount(id);
 
-      // Perform authentication steps. Replace these actions with your own.
-      await page.goto("/login");
-      await page.getByRole("textbox", { name: "Email" }).click();
-      await page.getByRole("textbox", { name: "Email" }).fill(account.email);
-      await page
-        .getByRole("textbox", { name: "Password" })
-        .fill(account.password);
-      await page.getByTestId("signin").click();
-      // Wait until the page receives the cookies.
-      //
-      // Sometimes login flow sets cookies in the process of several redirects.
-      // Wait for the final URL to ensure that the cookies are actually set.
+      // Perform authentication steps
+      const loginPage = new LoginPage(page);
+      await loginPage.goto();
+      await loginPage.login(account.email, account.password);
+
       await page.waitForURL("/");
-      // Alternatively, you can wait until the page reaches a state where all cookies are set.
       await expect(page.getByTestId("auth-avatar")).toBeVisible();
 
       // End of authentication steps.

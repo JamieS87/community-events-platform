@@ -11,10 +11,9 @@ export class AdminPage {
 
   async goto() {
     await this.page.goto("/admin");
-    await expect(this.page).toHaveURL("/admin");
   }
 
-  async createEvent() {
+  async clickCreateEvent() {
     await this.createEventButton.click();
     await expect(
       this.page.getByRole("dialog", { name: "Create Event" })

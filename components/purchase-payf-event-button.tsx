@@ -57,14 +57,12 @@ export default function PurchasePAYFEventButton({
           render={({ field }) => {
             return (
               <FormItem className="flex flex-col mx-auto max-w-xl text-xl">
-                <FormLabel className="col-span-3 text-center text-foreground text-lg font-semibold sr-only">
-                  Price
-                </FormLabel>
-                <FormControl>
-                  <div className="flex w-full">
-                    <div className="flex items-center font-semibold min-h-full px-4 rounded-tl-md rounded-bl-md border-t border-b border-l border-r">
-                      £
-                    </div>
+                <div className="flex w-full">
+                  <div className="flex items-center font-semibold min-h-full px-4 rounded-tl-md rounded-bl-md border-t border-b border-l border-r">
+                    £
+                  </div>
+                  <FormLabel className="sr-only">Price</FormLabel>
+                  <FormControl className="flex items-center font-semibold min-h-full px-4 rounded-tl-md rounded-bl-md border-t border-b border-l border-r">
                     <Input
                       data-testId="payf-price"
                       className="border-l-0 rounded-tl-none rounded-bl-none w-full text-xl"
@@ -72,8 +70,8 @@ export default function PurchasePAYFEventButton({
                       placeholder="1.00"
                       {...field}
                     />
-                  </div>
-                </FormControl>
+                  </FormControl>
+                </div>
                 <FormMessage />
               </FormItem>
             );

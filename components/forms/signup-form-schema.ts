@@ -3,14 +3,14 @@ import { z } from "zod";
 export const signUpFormSchema = z
   .object({
     firstname: z
-      .string({ message: "first name is reuired" })
-      .min(1, { message: "first name must be at least 1 character in length" })
+      .string({ message: "first name is required" })
+      .min(1, { message: "first name is required" })
       .regex(/^[a-zA-Z]+$/, {
         message: "first name must consist of only lower and uppercase letters",
       }),
     lastname: z
       .string({ message: "last name is required" })
-      .min(1, { message: "last name must be at least 1 character in length" })
+      .min(1, { message: "last name is required" })
       .regex(/^[a-zA-Z]+$/, {
         message: "last name must consist of only lower and uppercase letters",
       }),

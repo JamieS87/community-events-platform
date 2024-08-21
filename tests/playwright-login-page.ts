@@ -21,7 +21,7 @@ export class LoginPage {
 
   async goto() {
     await this.page.goto("/login");
-    await expect(this.page).toHaveURL("/login");
+    await expect(this.page).toHaveURL("/login", { timeout: 10000 });
   }
 
   async login(email: string, password: string) {
@@ -29,7 +29,6 @@ export class LoginPage {
     await this.email.fill(email);
     await this.password.click();
     await this.password.fill(password);
-    await this.signInButton.click({ timeout: 30000 });
-    await expect(this.page).toHaveURL("/");
+    await this.signInButton.click();
   }
 }

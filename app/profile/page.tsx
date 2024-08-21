@@ -32,41 +32,40 @@ export default async function ProfilePage() {
   );
 
   return (
-    <div className="flex flex-col p-2 gap-y-8 mt-8 w-full max-w-7xl mx-auto">
-      <div
-        className="flex items-center mx-auto space-x-4"
-        data-testid="profile-user"
-      >
-        <UserAvatar
-          user={user}
-          data-testid="profile-avatar"
-          className="w-16 h-16"
-        />
-        <div className="flex flex-col">
-          <p>{getUserFullName(user) || ""}</p>
-          <p className="font-semibold text-md">{user.email}</p>
-        </div>
-      </div>
-      <div className="flex items-center justify-center">
-        {!googleIdentity && <LinkGoogleAccountButton />}
-        {googleIdentity && identityData.identities.length > 1 && (
-          <div className="flex items-center border rounded-lg p-2 px-4">
-            <div className="w-6 h-6 mr-4">
-              <GoogleIcon />
-            </div>
-            <div className="flex-1 flex flex-col">
-              <p className="text-sm">Google account linked</p>
-              <p className="font-semibold">
-                {googleIdentity.identity_data?.email}
-              </p>
-            </div>
+    <>
+      <div className="flex flex-col p-2 gap-y-8 mt-8 w-full max-w-7xl mx-auto">
+        <div
+          className="flex items-center mx-auto space-x-4"
+          data-testid="profile-user"
+        >
+          <UserAvatar
+            user={user}
+            data-testid="profile-avatar"
+            className="w-16 h-16"
+          />
+          <div className="flex flex-col">
+            <p>{getUserFullName(user) || ""}</p>
+            <p className="font-semibold text-md">{user.email}</p>
           </div>
-        )}
+        </div>
+        <div className="flex items-center justify-center">
+          {!googleIdentity && <LinkGoogleAccountButton />}
+          {googleIdentity && identityData.identities.length > 1 && (
+            <div className="flex items-center border rounded-lg p-2 px-4">
+              <div className="w-6 h-6 mr-4">
+                <GoogleIcon />
+              </div>
+              <div className="flex-1 flex flex-col">
+                <p className="text-sm">Google account linked</p>
+                <p className="font-semibold">
+                  {googleIdentity.identity_data?.email}
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+        <UserPurchasedEvents/>
       </div>
-      <div className="flex items-center justify-between border-b pb-4">
-        <h2 className="font-semibold text-xl">My Purchased Events</h2>
-      </div>
-      <UserPurchasedEvents />
-    </div>
+    </>
   );
 }

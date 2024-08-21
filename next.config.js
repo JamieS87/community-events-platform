@@ -1,17 +1,14 @@
 /** @type {import('next').NextConfig} */
+const objectStorageURL = new URL(process.env.NEXT_PUBLIC_OBJECT_STORAGE_URL);
+
 const nextConfig = {
   images: {
     remotePatterns: [
       {
-        hostname: "127.0.0.1",
-        protocol: "http",
-        port: "54321",
-        pathname: "**",
-      },
-      {
-        hostname: "tlphffjtjooejpyrndxg.supabase.co",
-        protocol: "https",
-        pathname: "**",
+        hostname: objectStorageURL.hostname,
+        protocol: objectStorageURL.protocol.slice(0, -1),
+        port: objectStorageURL.port,
+        pathname: objectStorageURL.pathname + "/**",
       },
     ],
   },

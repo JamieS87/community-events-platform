@@ -39,6 +39,9 @@ export default async function UserPurchasedEvents() {
 
   return (
     <div data-testid="purchased-events">
+      <div className="flex items-center justify-between border-b pt-8">
+        <h2 className="font-semibold text-xl pb-4">My Purchased Events</h2>
+      </div>
       {!hasPurchasedEvents ? (
         <div className="text-center text-md text-muted-foreground">
           <span className="block">No purchased events to display yet.</span>
@@ -48,20 +51,20 @@ export default async function UserPurchasedEvents() {
         </div>
       ) : (
         <ul>
-          <li className="hidden md:grid md:grid-cols-4">
+          <li className="hidden md:grid md:grid-cols-4 mt-4 mb-4">
             <span className="text-sm font-semibold text-center">Name</span>
             <span className="text-sm font-semibold text-center">
               Amount Total
             </span>
             <span className="text-sm font-semibold text-center">Purchased</span>
-            <span className="text-sm font-semibold text-center">--</span>
+            <span className="text-sm font-semibold text-center">Calendar</span>
           </li>
           {purchasedEvents.map(
             ({ id, event_id, name, amount_total, purchased_at }) => {
               return (
                 <li
                   key={id}
-                  className="border-t py-4 grid grid-cols-4 items-center text-sm text-left md:text-center gap-y-2 md:gap-y-0"
+                  className="py-2 grid grid-cols-4 items-center text-sm text-left md:text-center gap-y-2 md:gap-y-0"
                 >
                   <Link
                     className="col-span-4 md:col-span-1"
@@ -77,7 +80,7 @@ export default async function UserPurchasedEvents() {
                     <span className="font-semibold md:hidden">Purchased </span>
                     {purchased_at && format(purchased_at, "PPP")}
                   </p>
-                  <div className="col-span-4 md:col-span-1 md:col-start-4 md:ml-auto mt-2 md:mt-auto">
+                  <div className="col-span-4 md:col-span-1 md:col-start-4 mt-2 md:mt-auto">
                     <AddToCalendarButton
                       event_id={event_id}
                       isInCalendar={
