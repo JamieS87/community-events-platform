@@ -1,5 +1,4 @@
-import { isEqual, isBefore, parse } from "date-fns";
-import { createGzip } from "zlib";
+import { isEqual, isBefore, parse, format } from "date-fns";
 import { z, ZodIssueCode } from "zod";
 
 export const createEventFormSchema = z
@@ -11,8 +10,8 @@ export const createEventFormSchema = z
       message: "Description must be at least 10 characters in length",
     }),
     pricing_model: z.enum(["free", "paid", "payf"]),
-    start_date: z.coerce.date(),
-    end_date: z.coerce.date(),
+    start_date: z.string().date(),
+    end_date: z.string().date(),
     start_time: z.string().regex(/^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$/gm, {
       message:
         "start time must be a valid time (00:00 - 23:59) in the format HH:MM",
@@ -53,11 +52,11 @@ export const createEventFormSchema = z
       const sameDay = isEqual(start_date, end_date);
       if (sameDay) {
         //Events starts and ends on the same day
-        const parsedStartDateTime = parse(start_time, "HH:mm:ss", start_date);
-        const parsedEndDateTime = parse(end_time, "HH:mm:ss", end_date);
-        const sameDayEndsBeforeStarts = isBefore(
-          parsedEndDateTime,
-          parsedStartDateTime
+        const parsedStartDateTime = parse(start_time, "HH:mm", start_date);
+        const parsedEndDateTime = parse(end_time, "HH:mm", end_date);
+        const sameDayEndsBeforeStarts = !isBefore(
+          parsedStartDateTime,
+          parsedEndDateTime
         );
         if (sameDayEndsBeforeStarts) {
           //Event ends before it starts

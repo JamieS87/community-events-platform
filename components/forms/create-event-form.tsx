@@ -29,7 +29,7 @@ import {
   PopoverContent,
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import { format, isBefore } from "date-fns";
+import { format, isBefore, parse } from "date-fns";
 import { CalendarDaysIcon, PlusIcon } from "lucide-react";
 import { createEvent } from "@/app/lib/actions/events";
 import { useFormState } from "react-dom";
@@ -62,8 +62,8 @@ export const CreateEventForm = () => {
     defaultValues: {
       name: "Untitled Event",
       description: "No description",
-      start_date: new Date(),
-      end_date: new Date(),
+      start_date: format(new Date(), "yyyy-MM-dd"),
+      end_date: format(new Date(), "yyyy-MM-dd"),
       start_time: "12:00",
       end_time: "20:00",
       price: 0,
@@ -118,7 +118,6 @@ export const CreateEventForm = () => {
     values
   ) => {
     const thumbnailFile = values.thumbnail;
-
     let fullPath: string;
     try {
       const data = await uploadEventThumbnail(thumbnailFile);
@@ -294,7 +293,7 @@ export const CreateEventForm = () => {
                 </FormItem>
               )}
             />
-            <div className="w-full flex items-center flex-col gap-y-4 md:flex-row md:gap-x-2">
+            <div className="w-full flex items-center flex-col gap-y-4 md:flex-row md:items-start md:gap-x-2">
               <div className="w-full flex-1">
                 <FormField
                   name="start_date"
@@ -307,7 +306,7 @@ export const CreateEventForm = () => {
                       <Input
                         name="start_date"
                         type="hidden"
-                        value={format(field.value, "yyyy-MM-dd")}
+                        value={field.value}
                       />
                       <Popover>
                         <FormControl>
@@ -327,9 +326,14 @@ export const CreateEventForm = () => {
                           <Calendar
                             data-testid="start-date-calendar"
                             mode="single"
-                            selected={field.value}
+                            selected={parse(
+                              field.value,
+                              "yyyy-MM-dd",
+                              new Date()
+                            )}
                             onSelect={(e) => {
-                              field.onChange(e);
+                              if (e === undefined) return;
+                              field.onChange(format(e, "yyyy-MM-dd"));
                               form.trigger();
                             }}
                             disabled={(date) =>
@@ -358,7 +362,7 @@ export const CreateEventForm = () => {
                       <Input
                         name="end_date"
                         type="hidden"
-                        value={format(field.value, "yyyy-MM-dd")}
+                        value={field.value}
                       />
                       <Popover>
                         <FormControl>
@@ -378,13 +382,25 @@ export const CreateEventForm = () => {
                           <Calendar
                             data-testid="end-date-calendar"
                             mode="single"
-                            selected={field.value}
+                            selected={parse(
+                              field.value,
+                              "yyyy-MM-dd",
+                              new Date()
+                            )}
                             onSelect={(e) => {
-                              field.onChange(e);
+                              if (e === undefined) return;
+                              field.onChange(format(e, "yyyy-MM-dd"));
                               form.trigger();
                             }}
                             disabled={(date) =>
-                              date < form.getValues().start_date
+                              isBefore(
+                                date,
+                                parse(
+                                  form.getValues().start_date,
+                                  "yyyy-MM-dd",
+                                  new Date()
+                                )
+                              )
                             }
                           />
                         </PopoverContent>
@@ -402,7 +418,14 @@ export const CreateEventForm = () => {
                 <FormItem>
                   <FormLabel className="text-foreground">Start time</FormLabel>
                   <FormControl>
-                    <Input placeholder="12:00" {...field} />
+                    <Input
+                      placeholder="12:00"
+                      {...field}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        form.trigger("end_time");
+                      }}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
