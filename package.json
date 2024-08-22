@@ -64,7 +64,7 @@
     "commander": "^12.1.0",
     "encoding": "^0.1.13",
     "eslint": "8.57.0",
-    "eslint-config-next": "14.2.5",
+    "eslint-config-next": "^0.2.4",
     "supabase": "^1.190.0",
     "tsx": "^4.17.0",
     "vitest": "^2.0.3"
