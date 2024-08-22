@@ -11,7 +11,9 @@ export class FreeEventPage {
 
   async goto(path: string) {
     await this.page.goto(path);
-    await expect(this.page.locator("div", { hasText: /^Free$/ })).toBeVisible();
+    await expect(
+      this.page.locator("div", { hasText: /^Free$/i })
+    ).toBeVisible();
   }
 
   async clickBuy() {
@@ -30,7 +32,9 @@ export class PaidEventPage {
 
   async goto(path: string) {
     await this.page.goto(path);
-    await expect(this.page.locator("div", { hasText: /^Paid$/ })).toBeVisible();
+    await expect(
+      this.page.locator("div", { hasText: /^Paid$/i })
+    ).toBeVisible();
   }
 
   async clickBuy() {
@@ -51,7 +55,9 @@ export class PAYFEventPage {
 
   async goto(path: string) {
     await this.page.goto(path);
-    await expect(this.page.locator("div", { hasText: /^Payf$/ })).toBeVisible();
+    await expect(
+      this.page.locator("div", { hasText: /^Payf$/i })
+    ).toBeVisible();
   }
 
   async clickBuy(price: string) {
