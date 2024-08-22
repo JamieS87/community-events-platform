@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CircleCheckBig, MailCheck } from "lucide-react";
+import { CircleCheckBig } from "lucide-react";
 
 export default async function SignUpConfirmPage({
   searchParams,
