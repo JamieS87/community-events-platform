@@ -51,7 +51,10 @@ export default function SiteAuth({ user, isStaff }: SiteAuthProps) {
       </DropdownMenuContent>
     </DropdownMenu>
   ) : (
-    <Button asChild>
+    <Button
+      className="bg-foreground text-background hover:bg-foreground/80"
+      asChild
+    >
       <Link href="/login" data-testid="login">
         Login
       </Link>
