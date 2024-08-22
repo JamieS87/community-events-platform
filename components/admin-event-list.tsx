@@ -89,7 +89,7 @@ export function AdminEventList({ initialEvents }: AdminEventListProps) {
     const event = eventToPublish;
     setEventToPublish(null);
     startTransition(() => {
-      addOptimisticEvent({ ...event, published: true });
+      addOptimisticEvent({ ...event, publishing: true });
     });
     const result = await publishEvent(event.id);
     if (result.code === "error") {
@@ -111,7 +111,7 @@ export function AdminEventList({ initialEvents }: AdminEventListProps) {
     if (!eventToUnpublish) return;
     const event = eventToUnpublish;
     setEventToUnpublish(null);
-    startTransition(() => addOptimisticEvent({ ...event, published: false }));
+    startTransition(() => addOptimisticEvent({ ...event, unpublishing: true }));
     const result = await unpublishEvent(event.id);
     if (result.code === "error") {
       toast({
@@ -207,7 +207,7 @@ export function AdminEventList({ initialEvents }: AdminEventListProps) {
                     onClick={() => setEventToUnpublish(event)}
                     size="sm"
                   >
-                    Unpublish
+                    {event.unpublishing ? "Unpublishing..." : "Unpublish"}
                   </Button>
                 ) : (
                   <Button
@@ -215,7 +215,7 @@ export function AdminEventList({ initialEvents }: AdminEventListProps) {
                     onClick={() => setEventToPublish(event)}
                     size="sm"
                   >
-                    Publish
+                    {event.publishing ? "Publishing..." : "Publish"}
                   </Button>
                 )}
               </span>
